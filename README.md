@@ -3,7 +3,7 @@ MicroGridsPy - Teaching version
 
 ### Description
 
-The MicroGridsPy model main objective is to provide an open-source alternative to the problem of sizing and dispatch of energy in micro-grids in isolated places. It’s written in python(pyomo) and use excel and text files as input and output data handling and visualisation.
+The MicroGridsPy model main objective is to provide an open-source alternative to the problem of sizing and dispatch of energy in micro-grids in isolated places. It’s written in python(pyomo) and uses excel and text files as input and output data handling and visualisation.
 
 Main features:
 
@@ -23,10 +23,26 @@ Sylvain Quoilin <br/>
 University of Liege, Belgium <br/>
 E-mail: squoilin@ulg.ac.be  <br/>
 
-*STUDENT VERSION*<br/>
+***Teaching version***<br/>
 Francesco Lombardi <br/>
 Politecnico di Milano, Italy <br/>
 E-mail: francesco.lombardi@polimi.it <br/>
+
+Nicolò Stevanato <br/>
+Politecnico di Milano / Fondazione Eni Enrico Mattei (FEEM), Italy <br/>
+E-mail: nicolo.stevanato@polimi.it <br/>
+
+Giulia Guidicini <br/>
+Politecnico di Milano, Italy <br/>
+E-mail: giulia.guidicini@polimi.it <br/>
+
+Lorenzo Rinaldi <br/>
+Politecnico di Milano, Italy <br/>
+E-mail: lorenzo.rinaldi@polimi.it <br/>
+
+Emanuela Colombo <br/>
+Politecnico di Milano, Italy <br/>
+E-mail: emanuela.colombo@polimi.it <br/>
  
 ### Required libraries
 
