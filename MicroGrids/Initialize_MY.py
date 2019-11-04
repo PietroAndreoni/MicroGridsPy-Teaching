@@ -173,3 +173,8 @@ def Min_Bat_Capacity(model,ut):
     Available_Energy = sum(Period_Average_Energy[s]*model.Scenario_Weight[s] for s in model.scenarios) 
     
     return  Available_Energy/(1-model.Depth_of_Discharge)
+
+
+def Extract_user_names()
+
+    return User_names

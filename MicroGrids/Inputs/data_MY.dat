@@ -84,3 +84,5 @@ param: Fuel_Cost :=                                         # Fuel cost for each
 
 param: Scenario_Weight :=                                   # Occurrence probability of each scenario [%]
 1  1;
+
+param: Number_of_us_type := 4;                              # Number of user classes in the demand curve

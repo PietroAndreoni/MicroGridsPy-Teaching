@@ -57,13 +57,13 @@ def Energy_balance(model,s,yt,ut,t): # Energy balance
     for g in model.generator_types:
         foo.append((s,yt,g,t))    
     Total_Generator_Energy = sum(model.Total_Generator_Energy[i] for i in foo)  
-    return model.Energy_Demand[s,yt,t] == (Total_Renewable_Energy + Total_Generator_Energy 
+    return sum(model.Energy_Demand[s,yt,t,us] for us in model.User_types) == (Total_Renewable_Energy + Total_Generator_Energy 
                                       - model.Energy_Battery_Flow_In[s,yt,t] + model.Energy_Battery_Flow_Out[s,yt,t] 
-                                      + model.Lost_Load[s,yt,t] - model.Energy_Curtailment[s,yt,t])
+                                      + sum(model.Lost_Load[s,yt,t,us] for us in model.User_types)  - model.Energy_Curtailment[s,yt,t])
 
 
-def Maximun_Lost_Load(model,s,yt): # Maximum permissible lost load
-    return model.Lost_Load_Probability >= (sum(model.Lost_Load[s,yt,t] for t in model.periods)/sum(model.Energy_Demand[s,yt,t] for t in model.periods))
+def Maximun_Lost_Load(model,s,yt,us): # Maximum permissible lost load
+    return model.Lost_Load_Probability[us] >= (sum(model.Lost_Load[s,yt,t,us] for t in model.periods)/sum(model.Energy_Demand[s,yt,t,us] for t in model.periods))
 
 
 def Maximun_Generator_Energy(model,s,yt,ut,g,t): # Maximun energy output of the diesel generator
@@ -86,7 +86,7 @@ def Total_Fuel_Cost_NonAct(model,s,g):
     return model.Total_Fuel_Cost_NonAct[s,g] == Fuel_Cost_Tot
 
 
-def Scenario_Lost_Load_Cost_Act(model,s):    
+def Scenario_Lost_Load_Cost_Act(model,s):   #to be modified 
     Cost_Lost_Load = 0         
     for y in range(1, model.Years +1):
         Num = sum(model.Lost_Load[s,y,t]*model.Value_Of_Lost_Load for t in model.periods)
@@ -94,7 +94,7 @@ def Scenario_Lost_Load_Cost_Act(model,s):
     return  model.Scenario_Lost_Load_Cost_Act[s] == Cost_Lost_Load
 
 
-def Scenario_Lost_Load_Cost_NonAct(model,s):
+def Scenario_Lost_Load_Cost_NonAct(model,s): #to be modified
     Cost_Lost_Load = 0         
     for y in range(1, model.Years +1):
         Num = sum(model.Lost_Load[s,y,t]*model.Value_Of_Lost_Load for t in model.periods)

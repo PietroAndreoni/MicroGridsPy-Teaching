@@ -13,7 +13,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     
     '''
     from pyomo.environ import Param, RangeSet, NonNegativeReals, Var, Set 
-    from Initialize_MY import Initialize_Demand, Unitary_Battery_Replacement_Cost, Initialize_Renewable_Energy, Generator_Marginal_Cost, Min_Bat_Capacity, Initialize_YearUpgrade_Tuples, Initialize_Upgrades_Number # Import library with initialitation funtions for the parameters
+    from Initialize_MY import Initialize_Demand, Unitary_Battery_Replacement_Cost, Initialize_Renewable_Energy, Generator_Marginal_Cost, Min_Bat_Capacity, Initialize_YearUpgrade_Tuples, Initialize_Upgrades_Number, Extract_user_names # Import library with initialitation funtions for the parameters
 
     # Time parameters
     model.Periods = Param(within=NonNegativeReals) # Number of periods of analysis of the energy variables
@@ -34,7 +34,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.generator_types = RangeSet(1, model.Generator_Types) # Creation of a set from 1 to the number of generators types to analized
     model.upgrades = RangeSet(1, model.Upgrades_Number) # Creation of a set from 1 to the number of investment decision steps
     model.yu_tup = Set(dimen = 2, initialize = Initialize_YearUpgrade_Tuples)  # 2D set of tuples: it associates each year to the corresponding investment decision step
-    
+    model.us_types = Set(initialize = Extract_user_names)
     # PARAMETERS
     model.Scenario_Weight = Param(model.scenarios, within=NonNegativeReals) 
     
@@ -79,7 +79,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     # Parameters of the Energy balance                  
     model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 
                                 initialize=Initialize_Demand) # Energy Energy_Demand in W 
-    model.Lost_Load_Probability = Param(within=NonNegativeReals) # Lost load probability in %
+    model.Lost_Load_Probability = Param(model.us_types, within=NonNegativeReals) # Lost load probability in %
     model.Value_Of_Lost_Load = Param(within=NonNegativeReals) # Value of lost load in USD/W
     if Renewable_Penetration > 0:
         model.Renewable_Penetration =  Renewable_Penetration
@@ -128,10 +128,10 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     
     
     # Variables associated to the energy balance
-    model.Lost_Load = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals) # Energy not supplied by the system kWh
+    model.Lost_Load = Var(model.scenarios, model.years, model.periods, model.us_types, within=NonNegativeReals) # Energy not supplied by the system kWh
     model.Energy_Curtailment = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals) # Curtailment of RES in kWh
-    model.Scenario_Lost_Load_Cost_Act = Var(model.scenarios, within=NonNegativeReals) 
-    model.Scenario_Lost_Load_Cost_NonAct = Var(model.scenarios, within=NonNegativeReals)    
+    model.Scenario_Lost_Load_Cost_Act = Var(model.scenarios, model.us_types, within=NonNegativeReals) 
+    model.Scenario_Lost_Load_Cost_NonAct = Var(model.scenarios, model.us_types, within=NonNegativeReals)    
     
 
     # Variables associated to the project
