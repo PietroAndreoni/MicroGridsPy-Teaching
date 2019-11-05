@@ -57,9 +57,9 @@ def Energy_balance(model,s,yt,ut,t): # Energy balance
     for g in model.generator_types:
         foo.append((s,yt,g,t))    
     Total_Generator_Energy = sum(model.Total_Generator_Energy[i] for i in foo)  
-    return sum(model.Energy_Demand[s,yt,t,us] for us in model.User_types) == (Total_Renewable_Energy + Total_Generator_Energy 
+    return sum(model.Energy_Demand[s,yt,t,us] for us in model.user_types) == (Total_Renewable_Energy + Total_Generator_Energy 
                                       - model.Energy_Battery_Flow_In[s,yt,t] + model.Energy_Battery_Flow_Out[s,yt,t] 
-                                      + sum(model.Lost_Load[s,yt,t,us] for us in model.User_types)  - model.Energy_Curtailment[s,yt,t])
+                                      + sum(model.Lost_Load[s,yt,t,us] for us in model.user_types)  - model.Energy_Curtailment[s,yt,t])
 
 
 def Maximun_Lost_Load(model,s,yt,us): # Maximum permissible lost load
@@ -86,20 +86,20 @@ def Total_Fuel_Cost_NonAct(model,s,g):
     return model.Total_Fuel_Cost_NonAct[s,g] == Fuel_Cost_Tot
 
 
-def Scenario_Lost_Load_Cost_Act(model,s):   #to be modified 
+def Scenario_Lost_Load_Cost_Act(model,s,us):  
     Cost_Lost_Load = 0         
     for y in range(1, model.Years +1):
-        Num = sum(model.Lost_Load[s,y,t]*model.Value_Of_Lost_Load for t in model.periods)
+        Num = sum(model.Lost_Load[s,y,t,us]*model.Value_Of_Lost_Load for t in model.periods)
         Cost_Lost_Load += Num/((1+model.Discount_Rate)**y)
-    return  model.Scenario_Lost_Load_Cost_Act[s] == Cost_Lost_Load
+    return  model.Scenario_Lost_Load_Cost_Act[s,us] == Cost_Lost_Load
 
 
-def Scenario_Lost_Load_Cost_NonAct(model,s): #to be modified
+def Scenario_Lost_Load_Cost_NonAct(model,s,us): 
     Cost_Lost_Load = 0         
     for y in range(1, model.Years +1):
-        Num = sum(model.Lost_Load[s,y,t]*model.Value_Of_Lost_Load for t in model.periods)
+        Num = sum(model.Lost_Load[s,y,t,us]*model.Value_Of_Lost_Load for t in model.periods)
         Cost_Lost_Load += Num
-    return  model.Scenario_Lost_Load_Cost_NonAct[s] == Cost_Lost_Load
+    return  model.Scenario_Lost_Load_Cost_NonAct[s,us] == Cost_Lost_Load
  
      
 def Investment_Cost(model):  
@@ -317,7 +317,7 @@ def Scenario_Variable_Cost_Act(model, s):
     for g in range(1,model.Generator_Types+1):
             foo.append((s,g))   
     Fuel_Cost = sum(model.Total_Fuel_Cost_Act[s,g] for s,g in foo)    
-    return model.Total_Scenario_Variable_Cost_Act[s] == model.Operation_Maintenance_Cost_Act + model.Battery_Replacement_Cost_Act[s] + model.Scenario_Lost_Load_Cost_Act[s] + Fuel_Cost
+    return model.Total_Scenario_Variable_Cost_Act[s] == model.Operation_Maintenance_Cost_Act + model.Battery_Replacement_Cost_Act[s] + sum(model.Scenario_Lost_Load_Cost_Act[s,us] for us in model.user_types) + Fuel_Cost
 
 
 def Scenario_Variable_Cost_NonAct(model, s):
@@ -325,7 +325,7 @@ def Scenario_Variable_Cost_NonAct(model, s):
     for g in range(1,model.Generator_Types+1):
             foo.append((s,g))   
     Fuel_Cost = sum(model.Total_Fuel_Cost_NonAct[s,g] for s,g in foo)    
-    return model.Total_Scenario_Variable_Cost_NonAct[s] == model.Operation_Maintenance_Cost_NonAct + model.Battery_Replacement_Cost_NonAct[s] + model.Scenario_Lost_Load_Cost_NonAct[s] + Fuel_Cost
+    return model.Total_Scenario_Variable_Cost_NonAct[s] == model.Operation_Maintenance_Cost_NonAct + model.Battery_Replacement_Cost_NonAct[s] + sum(model.Scenario_Lost_Load_Cost_NonAct[s,us] for us in model.user_types) + Fuel_Cost
 
 
 def Total_Variable_Cost_Obj(model):
