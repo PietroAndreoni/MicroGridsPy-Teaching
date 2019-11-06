@@ -1,6 +1,6 @@
 param: Periods := 8760;                                     # periods considered in one year (8760h/y in the example)
 
-param: Years := 20;                                          # total duration of the project
+param: Years := 5;                                          # total duration of the project
 
 param: Step_Duration := 20;                                  # duration (in years) of each investment decision step in which the project lifetime will be split
 
@@ -55,8 +55,8 @@ param: Renewable_Investment_Cost :=                         # Investment cost fo
 2  4.59535;   
 
 param: Renewable_Lifetime :=                                # Component lifetime [y]
-1 20
-2 20;
+1 5
+2 5;
  
 param: Renewable_Operation_Maintenance_Cost :=              # O&M cost for each type of RES as a fraction of investment cost [%]
 1  0.02                                                       
