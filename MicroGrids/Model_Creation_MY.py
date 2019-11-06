@@ -82,7 +82,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 
                                 initialize=Initialize_Demand) # Energy Energy_Demand in W 
     model.Lost_Load_Probability = Param(model.us_types, within=NonNegativeReals) # Lost load probability in %
-    model.Value_Of_Lost_Load = Param(within=NonNegativeReals) # Value of lost load in USD/W
+    model.Value_Of_Lost_Load = Param(model.us_types, within=NonNegativeReals) # Value of lost load in USD/W
     if Renewable_Penetration > 0:
         model.Renewable_Penetration =  Renewable_Penetration
    

@@ -18,15 +18,11 @@ param: Battery_Operation_Maintenance_Cost:= 0.02;           # O&M cost of the ba
 
 param: Discount_Rate := 0.037;                                  # Real discount rate accounting also for inflation
 
-param: Lost_Load_Probability := 0.0;                        # [%]
-
 param: Discharge_Battery_Efficiency := 0.95;                # [%]
 
 param: Charge_Battery_Efficiency := 0.95;                   # [%]
 
 param: Depth_of_Discharge := 0.2;                           # [%]
-
-param: Value_Of_Lost_Load := 0.0;                           # [USD/Wh]
 
 param: Maximum_Battery_Discharge_Time := 1;                 # [h]
 
@@ -45,6 +41,18 @@ param: Renewable_Sources := 2;                              # Number of RES type
 param: Renewable_Nominal_Capacity :=                        # Single unit capacity [W] of each type of RES
 1   1000
 2   30000;                                                                                                
+
+param: Value_Of_Lost_Load :=                                # [USD/Wh]
+1  0.0
+2  0.0
+3  0.0
+4  0.0;
+
+param: Lost_Load_Probability :=                             # [%]
+1  0.0                        
+2  0.0
+3  0.0
+4  0.0;
 
 param: Renewable_Inverter_Efficiency :=                     # Efficiency [%] of the inverter connected to each RES (put 1 in case of AC bus)
 1	 0.95
