@@ -18,12 +18,13 @@ n_scenarios = int((re.findall('\d+',Data_import[38])[0]))
 n_years = int((re.findall('\d+',Data_import[2])[0]))
 n_periods = int((re.findall('\d+',Data_import[0])[0]))
 n_generators = int((re.findall('\d+',Data_import[64])[0]))
+n_users = int((re.findall('\d+',Data_import[96])[0]))
 
 scenario = [i for i in range(1,n_scenarios+1)]
 year = [i for i in range(1,n_years+1)]
 period = [i for i in range(1,n_periods+1)]
 generator = [i for i in range(1,n_generators+1)]
-
+user = [i for i in range(1,n_users+1)]
 
 '''
 This section imports the multi-year Demand and creates a Multi-indexed pd.DataFrame for it
@@ -31,30 +32,32 @@ This section imports the multi-year Demand and creates a Multi-indexed pd.DataFr
 Demand = pd.read_excel('Inputs/Demand.xls')
 Energy_Demand_Series = pd.Series()
 
-for i in range(1,n_years*n_scenarios+1):
+for i in range(1,n_years*n_scenarios*n_users+1):
     dum = Demand[i][:]
     Energy_Demand_Series = pd.concat([Energy_Demand_Series,dum])
 
 Energy_Demand = pd.DataFrame(Energy_Demand_Series) 
-frame = [scenario,year,period]
-index = pd.MultiIndex.from_product(frame, names=['scenario','year','period'])
+frame = [scenario,year,period,user]
+index = pd.MultiIndex.from_product(frame, names=['scenario','year','period','user'])
 Energy_Demand.index = index
 
+# Energy_demand_2: what is it? do i need to modify it?
+# produces a data frame indexed
 
 Energy_Demand_2 = pd.DataFrame()    
 
 for s in scenario:
     Energy_Demand_Series_2 = pd.Series()
     for y in year:
-        dum_2 = Demand[(s-1)*n_years + y][:]
+        dum_2 = sum(Demand[(s-1)*n_years*n_users + y + (us-1)][:] for us in user)
         Energy_Demand_Series_2 = pd.concat([Energy_Demand_Series_2,dum_2])
     Energy_Demand_2.loc[:,s] = Energy_Demand_Series_2
 
 index_2 = pd.RangeIndex(1,n_years*n_periods+1)
 Energy_Demand_2.index = index_2
 
-def Initialize_Demand(model, s, y, t):
-    return float(Energy_Demand[0][(s,y,t)])
+def Initialize_Demand(model, s, y, t, us):
+    return float(Energy_Demand[0][(s,y,t,us)])
 
 
 def Generator_Marginal_Cost(model,s,y,g):
