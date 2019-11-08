@@ -27,6 +27,7 @@ def Load_Results(instance, Optimization_Goal):
     Number_Upgrades = int(instance.Upgrades_Number.extract_values()[None])
     Number_Renewable_Sources = int(instance.Renewable_Sources.extract_values()[None])
     Number_Generators = int(instance.Generator_Types.extract_values()[None])
+    Number_users = int(instance.Number_of_us_type.extract_values()[None])
 
     upgrades = [i for i in range(1, Number_Upgrades+1)]
     
@@ -107,7 +108,7 @@ def Load_Results(instance, Optimization_Goal):
     for i in columns:
         Information = [[] for i in range(0,9)]
         for j in  Scenarios_Periods[foo]:
-            Information[0].append(Lost_Load[j])
+            Information[0].append(Lost_Load[j]) #???????
             Information[1].append(Battery_Flow_Out[j]) 
             Information[2].append(Battery_Flow_in[j]) 
             Information[3].append(Curtailment[j]) 
@@ -354,7 +355,7 @@ def Load_Results(instance, Optimization_Goal):
     TotVarCostAct = instance.Total_Variable_Cost_Act.value
     SalvageValue = instance.Salvage_Value.value
     TotInvCost = instance.Investment_Cost.value
-    VOLL = instance.Value_Of_Lost_Load.value
+    VOLL = instance.Value_Of_Lost_Load.values()
     Renewable_Units = instance.Renewable_Units.get_values()
     
     PRJ_Info = ExcelWriter('Results/Results_Summary.xlsx')
@@ -431,7 +432,7 @@ def Load_Results(instance, Optimization_Goal):
         
         Project_Info_3.loc['Year '+str(y), 'Fuel Cost'] = sum(sum(sum(Generator_Energy[s,y,g,t]*Marginal_Cost_Gen[s,y,g]*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for g in range(1, Number_Generators+1))for s in range(1, Number_Scenarios+1))
         Project_Info_3.loc['Year '+str(y), 'Battery Replacement Cost'] = sum(sum((Battery_Flow_in[s,y,t]+Battery_Flow_Out[s,y,t])*Unitary_Battery_Replacement_Cost*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for s in range(1, Number_Scenarios+1))
-        Project_Info_3.loc['Year '+str(y), 'Lost Load Cost'] = sum(sum(Lost_Load[s,y,t]*VOLL*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for s in range(1, Number_Scenarios+1))
+        Project_Info_3.loc['Year '+str(y), 'Lost Load Cost'] = sum(sum(sum(Lost_Load[s,y,t,us]*VOLL[us]*Scenario_Weight[s] for us in range(1,Number_users+1) ) for t in range(1, Number_Periods+1)) for s in range(1, Number_Scenarios+1))
     
     Project_Info_3.to_excel(PRJ_Info, sheet_name = 'Yearly Costs Info')
 
