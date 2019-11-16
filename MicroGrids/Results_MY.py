@@ -27,7 +27,8 @@ def Load_Results(instance, Optimization_Goal):
     Number_Upgrades = int(instance.Upgrades_Number.extract_values()[None])
     Number_Renewable_Sources = int(instance.Renewable_Sources.extract_values()[None])
     Number_Generators = int(instance.Generator_Types.extract_values()[None])
-    Number_users = int(instance.Number_of_us_type.extract_values()[None])
+    Number_users = int(instance.User_Types.extract_values()[None])
+#dafaq? Isn't pyomo case sensitive?
 
     upgrades = [i for i in range(1, Number_Upgrades+1)]
     
@@ -108,7 +109,7 @@ def Load_Results(instance, Optimization_Goal):
     for i in columns:
         Information = [[] for i in range(0,9)]
         for j in  Scenarios_Periods[foo]:
-            Information[0].append(Lost_Load[j]) #???????
+            Information[0].append(sum(Lost_Load[j,:,:,us] for us in range(1,Number_users+1)) # ??
             Information[1].append(Battery_Flow_Out[j]) 
             Information[2].append(Battery_Flow_in[j]) 
             Information[3].append(Curtailment[j]) 

@@ -177,7 +177,3 @@ def Min_Bat_Capacity(model,ut):
     
     return  Available_Energy/(1-model.Depth_of_Discharge)
 
-
-def Extract_user_names()
-
-    return User_names

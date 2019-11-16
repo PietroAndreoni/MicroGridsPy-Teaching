@@ -245,7 +245,7 @@ def Scenario_Net_Present_Cost(model,s):
             foo.append((s,g))            
     Fuel_Cost = sum(model.Total_Fuel_Cost_Act[s,g] for s,g in foo)    
     return model.Scenario_Net_Present_Cost[s] == (model.Investment_Cost + model.Operation_Maintenance_Cost_Act + model.Battery_Replacement_Cost_Act[s] 
-            + model.Scenario_Lost_Load_Cost_Act[s] + Fuel_Cost - model.Salvage_Value)   
+            + sum(model.Scenario_Lost_Load_Cost_Act[s,us] for us in model.user_types) + Fuel_Cost - model.Salvage_Value)   
 
                 
 def Renewable_Energy_Penetration(model,ut):    

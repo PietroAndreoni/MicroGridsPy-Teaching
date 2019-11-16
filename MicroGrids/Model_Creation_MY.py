@@ -25,16 +25,17 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.Step_Duration = Param()
     model.Min_Last_Step_Duration = Param()
     model.Upgrades_Number = Param(initialize = Initialize_Upgrades_Number)
+    model.Number_of_us_type = Param()
     
     # SETS
     model.periods = RangeSet(1, model.Periods) # Creation of a set from 1 to the number of periods in each year
     model.years = RangeSet(1, model.Years) # Creation of a set from 1 to the number of years of the project
     model.scenarios = RangeSet(1, model.Scenarios) # Creation of a set from 1 to the number of scenarios to analized
     model.renewable_sources = RangeSet(1, model.Renewable_Sources) # Creation of a set from 1 to the number of RES technologies to analized
-    model.generator_types = RangeSet(1, model.Generator_Types) # Creation of a set from 1 to the number of generators types to analized
+    model.generator_types = RangeSet(1, moNumber_of_us_typedel.Generator_Types) # Creation of a set from 1 to the number of generators types to analized
     model.upgrades = RangeSet(1, model.Upgrades_Number) # Creation of a set from 1 to the number of investment decision steps
     model.yu_tup = Set(dimen = 2, initialize = Initialize_YearUpgrade_Tuples)  # 2D set of tuples: it associates each year to the corresponding investment decision step
-    model.user_types = Set(initialize = Extract_user_names)
+    model.user_types = Rangeset(1, model.Number_of_us_type)
 
     
     # PARAMETERS
