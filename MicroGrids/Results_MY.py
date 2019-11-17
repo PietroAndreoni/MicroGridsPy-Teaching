@@ -109,7 +109,7 @@ def Load_Results(instance, Optimization_Goal):
     for i in columns:
         Information = [[] for i in range(0,9)]
         for j in  Scenarios_Periods[foo]:
-            Information[0].append(sum(Lost_Load[j,:,:,us] for us in range(1,Number_users+1)) # ??
+            Information[0].append(sum(Lost_Load[j,:,:,us] for us in range(1,Number_users+1))) # ??
             Information[1].append(Battery_Flow_Out[j]) 
             Information[2].append(Battery_Flow_in[j]) 
             Information[3].append(Curtailment[j]) 
