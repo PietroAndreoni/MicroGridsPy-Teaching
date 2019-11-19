@@ -48,7 +48,7 @@ def Max_Bat_out(model,s,yt,ut,t): #minimun flow of energy for the discharge fase
     return model.Energy_Battery_Flow_Out[s,yt,t] <= model.Maximum_Discharge_Power[ut]*model.Delta_Time
 
 def Sum_lost_load(model,s,yt,t):
-    return model.Lost_load_tot[s,yt,t] == sum(model.Lost_load[s,yt,us,t] for us in model.user_types)
+    return model.Lost_Load_tot[s,yt,t] == sum(model.Lost_Load[s,yt,us,t] for us in model.user_types)
 
 def Energy_balance(model,s,yt,ut,t): # Energy balance
     Foo = []
@@ -59,13 +59,13 @@ def Energy_balance(model,s,yt,ut,t): # Energy balance
     for g in model.generator_types:
         foo.append((s,yt,g,t))    
     Total_Generator_Energy = sum(model.Total_Generator_Energy[i] for i in foo)  
-    return model.Energy_Demand[s,yt,t] == (Total_Renewable_Energy + Total_Generator_Energy 
+    return sum(model.Energy_Demand[s,yt,us,t] for us in model.user_types) == (Total_Renewable_Energy + Total_Generator_Energy 
                                       - model.Energy_Battery_Flow_In[s,yt,t] + model.Energy_Battery_Flow_Out[s,yt,t] 
-                                      + Lost_load_tot[s,yt,y]  - model.Energy_Curtailment[s,yt,t])
+                                      + model.Lost_Load_tot[s,yt,t]  - model.Energy_Curtailment[s,yt,t])
 
 
 def Maximun_Lost_Load(model,s,us,yt): # Maximum permissible lost load
-    return model.Lost_Load_Probability[us] >= (sum(model.Lost_Load[s,yt,us,t] for t in model.periods)/sum(model.Energy_Demand[s,yt,t] for t in model.periods))
+    return model.Lost_Load_Probability[us] >= (sum(model.Lost_Load[s,yt,us,t] for t in model.periods)/sum(model.Energy_Demand[s,yt,us,t] for t in model.periods))
 
 
 def Maximun_Generator_Energy(model,s,yt,ut,g,t): # Maximun energy output of the diesel generator

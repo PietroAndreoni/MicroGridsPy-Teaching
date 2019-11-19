@@ -47,7 +47,7 @@ def Load_Results(instance, Optimization_Goal):
                 elif y >= upgrade_years_list[-1]:
                     yu_tuples_list[y-1] = (y, len(upgrades)) 
 
-    Lost_load = instance.Lost_load.get_values()
+    Lost_Load = instance.Lost_Load.get_values()
     Lost_Load_tot = instance.Lost_Load_tot.get_values()
     Renewable_Energy_1 = instance.Total_Renewable_Energy.get_values()
     Battery_Flow_Out = instance.Energy_Battery_Flow_Out.get_values()

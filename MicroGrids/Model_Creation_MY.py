@@ -80,7 +80,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.Generator_Lifetime = Param(model.generator_types,
                                            within=NonNegativeReals)    
     # Parameters of the Energy balance                  
-    model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 
+    model.Energy_Demand = Param(model.scenarios, model.years, model.user_types, model.periods, 
                                 initialize=Initialize_Demand) # Energy Energy_Demand in W 
     model.Lost_Load_Probability = Param(model.user_types, within=NonNegativeReals) # Lost load probability in %
     model.Value_Of_Lost_Load = Param(model.user_types, within=NonNegativeReals) # Value of lost load in USD/W
@@ -132,7 +132,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     
     # Variables associated to the energy balance
     model.Lost_Load = Var(model.scenarios, model.years, model.user_types, model.periods, within=NonNegativeReals) # Energy not supplied by the system kWh
-    model.Lost_load_tot = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals)
+    model.Lost_Load_tot = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals)
     model.Energy_Curtailment = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals) # Curtailment of RES in kWh
     model.Scenario_Lost_Load_Cost_Act = Var(model.scenarios, model.user_types, within=NonNegativeReals) 
     model.Scenario_Lost_Load_Cost_NonAct = Var(model.scenarios, model.user_types, within=NonNegativeReals)    
