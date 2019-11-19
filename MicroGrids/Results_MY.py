@@ -28,7 +28,6 @@ def Load_Results(instance, Optimization_Goal):
     Number_Renewable_Sources = int(instance.Renewable_Sources.extract_values()[None])
     Number_Generators = int(instance.Generator_Types.extract_values()[None])
     Number_users = int(instance.Number_of_us_type.extract_values()[None])
-#dafaq? Isn't pyomo case sensitive?
 
     upgrades = [i for i in range(1, Number_Upgrades+1)]
     
@@ -56,12 +55,17 @@ def Load_Results(instance, Optimization_Goal):
     SOC = instance.State_Of_Charge_Battery.get_values()
     Generator_Energy = instance.Total_Generator_Energy.get_values()
 
-    Energy_Demand = instance.Energy_Demand.extract_values()    
+    Energy_Demand_us = instance.Energy_Demand.extract_values()    
     Scenario_Weight = instance.Scenario_Weight.extract_values()
     Discount_Rate = instance.Discount_Rate.value
     LHV = (instance.Lower_Heating_Value.extract_values())
     Gen_Eff = (instance.Generator_Efficiency.extract_values())
-
+    
+    Energy_Demand = {}
+    for i in range (1,Number_Scenarios+1):
+        for j in range (1,Number_Years+1):
+            for k in range (1,Number_Periods+1):
+                Energy_Demand[(i,j,k)] = sum(Energy_Demand_us[(i,j,m,k)] for m in range(1,Number_users+1)) 
     print('Number of scenarios = '+str(Number_Scenarios))
     print('Number of years = '+str(Number_Years)+'\n')
 
