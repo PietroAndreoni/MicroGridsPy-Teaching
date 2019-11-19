@@ -18,7 +18,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     :return: The solution inside an object call instance.
     '''
     from Constraints_MY import  Renewable_Energy,State_of_Charge,\
-    Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out, \
+    Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out, Sum_lost_load, \
     Energy_balance, Maximun_Lost_Load,Scenario_Net_Present_Cost, Scenario_Lost_Load_Cost_Act, Scenario_Lost_Load_Cost_NonAct, Renewable_Energy_Penetration,\
     Investment_Cost, Operation_Maintenance_Cost_Act, Operation_Maintenance_Cost_NonAct, Battery_Replacement_Cost_Act, Battery_Replacement_Cost_NonAct, Maximun_Generator_Energy, Total_Fuel_Cost_Act, Total_Fuel_Cost_NonAct,\
     Battery_Min_Capacity, Battery_Min_Step_Capacity, Renewables_Min_Step_Units, Generator_Min_Step_Capacity, Salvage_Value, Net_Present_Cost_Obj,Total_Variable_Cost_Act, Scenario_Variable_Cost_Act, Scenario_Variable_Cost_NonAct,Total_Variable_Cost_Obj, Net_Present_Cost, Investment_Cost_Limit
@@ -37,10 +37,12 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     #Energy constraints
     model.EnergyBalance = Constraint(model.scenarios, model.yu_tup, model.periods, rule=Energy_balance)
 
-    model.MaximunLostLoad = Constraint(model.scenarios, model.years, rule=Maximun_Lost_Load) # Maximum permissible lost load
+    model.MaximunLostLoad = Constraint(model.scenarios, model.user_types, model.years, rule=Maximun_Lost_Load) # Maximum permissible lost load
     if Renewable_Penetration > 0:
         model.RenewableEnergyPenetration = Constraint(model.upgrades, rule=Renewable_Energy_Penetration)
     
+    model.Lost_load_tot = Constraint(model.scenarios,model.years,model.periods,rule=Sum_lost_load)
+
     # RES constraints
     model.RenewableEnergy = Constraint(model.scenarios, model.yu_tup, model.renewable_sources,
                                        model.periods, rule=Renewable_Energy)  # Energy output of the solar panels
@@ -70,7 +72,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     model.InitialInvestment = Constraint(rule=Investment_Cost)
     model.SalvageValue = Constraint(rule=Salvage_Value)
     model.OperationMaintenanceCostAct = Constraint(rule=Operation_Maintenance_Cost_Act)
-    model.ScenarioLostLoadCostAct = Constraint(model.scenarios, rule=Scenario_Lost_Load_Cost_Act)
+    model.ScenarioLostLoadCostAct = Constraint(model.scenarios,model.user_types, rule=Scenario_Lost_Load_Cost_Act)
     model.FuelCostTotalAct = Constraint(model.scenarios, model.generator_types, rule=Total_Fuel_Cost_Act)
     model.BatteryReplacementCostAct = Constraint(model.scenarios,rule=Battery_Replacement_Cost_Act) 
     model.ScenarioVariableCostAct = Constraint(model.scenarios,rule=Scenario_Variable_Cost_Act)    
@@ -79,7 +81,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     if Optimization_Goal == 'Operation cost':
         model.InvestmentCostLimit = Constraint(rule=Investment_Cost_Limit)
         model.OperationMaintenanceCostNonAct = Constraint(rule=Operation_Maintenance_Cost_NonAct)
-        model.ScenarioLostLoadCostNonAct = Constraint(model.scenarios, rule=Scenario_Lost_Load_Cost_NonAct)
+        model.ScenarioLostLoadCostNonAct = Constraint(model.scenarios, model.user_types, rule=Scenario_Lost_Load_Cost_NonAct)
         model.FuelCostTotalNonAct = Constraint(model.scenarios, model.generator_types, rule=Total_Fuel_Cost_NonAct)
         model.BatteryReplacementCostNonAct = Constraint(model.scenarios,rule=Battery_Replacement_Cost_NonAct) 
         model.ScenarioVariableCostNonAct = Constraint(model.scenarios,rule=Scenario_Variable_Cost_NonAct)     

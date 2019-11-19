@@ -131,7 +131,8 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     
     
     # Variables associated to the energy balance
-    model.Lost_Load = Var(model.scenarios, model.years, model.periods, model.user_types, within=NonNegativeReals) # Energy not supplied by the system kWh
+    model.Lost_Load = Var(model.scenarios, model.years, model.user_types, model.periods, within=NonNegativeReals) # Energy not supplied by the system kWh
+    model.Lost_load_tot = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals)
     model.Energy_Curtailment = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals) # Curtailment of RES in kWh
     model.Scenario_Lost_Load_Cost_Act = Var(model.scenarios, model.user_types, within=NonNegativeReals) 
     model.Scenario_Lost_Load_Cost_NonAct = Var(model.scenarios, model.user_types, within=NonNegativeReals)    

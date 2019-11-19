@@ -47,6 +47,8 @@ def Max_Bat_in(model,s,yt,ut,t): # Minimun flow of energy for the charge fase
 def Max_Bat_out(model,s,yt,ut,t): #minimun flow of energy for the discharge fase
     return model.Energy_Battery_Flow_Out[s,yt,t] <= model.Maximum_Discharge_Power[ut]*model.Delta_Time
 
+def Sum_lost_load(model,s,yt,t):
+    return model.Lost_load_tot[s,yt,t] == sum(model.Lost_load[s,yt,us,t] for us in model.user_types)
 
 def Energy_balance(model,s,yt,ut,t): # Energy balance
     Foo = []
@@ -57,13 +59,13 @@ def Energy_balance(model,s,yt,ut,t): # Energy balance
     for g in model.generator_types:
         foo.append((s,yt,g,t))    
     Total_Generator_Energy = sum(model.Total_Generator_Energy[i] for i in foo)  
-    return sum(model.Energy_Demand[s,yt,t,us] for us in model.user_types) == (Total_Renewable_Energy + Total_Generator_Energy 
+    return model.Energy_Demand[s,yt,t] == (Total_Renewable_Energy + Total_Generator_Energy 
                                       - model.Energy_Battery_Flow_In[s,yt,t] + model.Energy_Battery_Flow_Out[s,yt,t] 
-                                      + sum(model.Lost_Load[s,yt,t,us] for us in model.user_types)  - model.Energy_Curtailment[s,yt,t])
+                                      + Lost_load_tot[s,yt,y]  - model.Energy_Curtailment[s,yt,t])
 
 
-def Maximun_Lost_Load(model,s,yt,us): # Maximum permissible lost load
-    return model.Lost_Load_Probability[us] >= (sum(model.Lost_Load[s,yt,t,us] for t in model.periods)/sum(model.Energy_Demand[s,yt,t,us] for t in model.periods))
+def Maximun_Lost_Load(model,s,us,yt): # Maximum permissible lost load
+    return model.Lost_Load_Probability[us] >= (sum(model.Lost_Load[s,yt,us,t] for t in model.periods)/sum(model.Energy_Demand[s,yt,t] for t in model.periods))
 
 
 def Maximun_Generator_Energy(model,s,yt,ut,g,t): # Maximun energy output of the diesel generator
@@ -89,7 +91,7 @@ def Total_Fuel_Cost_NonAct(model,s,g):
 def Scenario_Lost_Load_Cost_Act(model,s,us):  
     Cost_Lost_Load = 0         
     for y in range(1, model.Years +1):
-        Num = sum(model.Lost_Load[s,y,t,us]*model.Value_Of_Lost_Load[us] for t in model.periods)
+        Num = sum(model.Lost_Load[s,y,us,t]*model.Value_Of_Lost_Load[us] for t in model.periods)
         Cost_Lost_Load += Num/((1+model.Discount_Rate)**y)
     return  model.Scenario_Lost_Load_Cost_Act[s,us] == Cost_Lost_Load
 
@@ -97,7 +99,7 @@ def Scenario_Lost_Load_Cost_Act(model,s,us):
 def Scenario_Lost_Load_Cost_NonAct(model,s,us): 
     Cost_Lost_Load = 0         
     for y in range(1, model.Years +1):
-        Num = sum(model.Lost_Load[s,y,t,us]*model.Value_Of_Lost_Load[us] for t in model.periods)
+        Num = sum(model.Lost_Load[s,y,us,t]*model.Value_Of_Lost_Load[us] for t in model.periods)
         Cost_Lost_Load += Num
     return  model.Scenario_Lost_Load_Cost_NonAct[s,us] == Cost_Lost_Load
  

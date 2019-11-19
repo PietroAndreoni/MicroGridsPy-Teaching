@@ -37,8 +37,8 @@ for i in range(1,n_years*n_scenarios*n_users+1):
     Energy_Demand_Series = pd.concat([Energy_Demand_Series,dum])
 
 Energy_Demand = pd.DataFrame(Energy_Demand_Series) 
-frame = [scenario,year,period,user]
-index = pd.MultiIndex.from_product(frame, names=['scenario','year','period','user'])
+frame = [scenario,year,user,period]
+index = pd.MultiIndex.from_product(frame, names=['scenario','year','user','period'])
 Energy_Demand.index = index
 
 # Energy_demand_2: what is it? do i need to modify it?
@@ -56,8 +56,8 @@ for s in scenario:
 index_2 = pd.RangeIndex(1,n_years*n_periods+1)
 Energy_Demand_2.index = index_2
 
-def Initialize_Demand(model, s, y, t, us):
-    return float(Energy_Demand[0][(s,y,t,us)])
+def Initialize_Demand(model, s, y, us, t):
+    return float(Energy_Demand[0][(s,y,us,t)])
 
 
 def Generator_Marginal_Cost(model,s,y,g):
