@@ -5,6 +5,7 @@ Authors: Giulia Guidicini, Lorenzo Rinaldi - Politecnico di Milano
 """
 
 import pandas as pd
+import pyomo.environ as pyo
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
@@ -27,7 +28,7 @@ def Load_Results(instance, Optimization_Goal):
     Number_Upgrades = int(instance.Upgrades_Number.extract_values()[None])
     Number_Renewable_Sources = int(instance.Renewable_Sources.extract_values()[None])
     Number_Generators = int(instance.Generator_Types.extract_values()[None])
-    Number_users = int(instance.Number_of_us_type.extract_values()[None])
+    Number_Users = int(instance.Number_of_us_type.extract_values()[None])
 
     upgrades = [i for i in range(1, Number_Upgrades+1)]
     
@@ -65,7 +66,7 @@ def Load_Results(instance, Optimization_Goal):
     for i in range (1,Number_Scenarios+1):
         for j in range (1,Number_Years+1):
             for k in range (1,Number_Periods+1):
-                Energy_Demand[(i,j,k)] = sum(Energy_Demand_us[(i,j,m,k)] for m in range(1,Number_users+1)) 
+                Energy_Demand[(i,j,k)] = sum(Energy_Demand_us[(i,j,m,k)] for m in range(1,Number_Users+1)) 
     print('Number of scenarios = '+str(Number_Scenarios))
     print('Number of years = '+str(Number_Years)+'\n')
 
@@ -319,7 +320,7 @@ def Load_Results(instance, Optimization_Goal):
             Battery_Data.loc['Investment at upgrade '+str(u),0] = (Battery_Nominal_Capacity[u] - Battery_Nominal_Capacity[u-1])*PriceBattery
 
     for u in range(1, Number_Upgrades +1):
-        Battery_Data.loc['Yearly O&M Cost at upgrade '+str(u),0] = Battery_Nominal_Capacity[u]*PriceBattery*OM_Bat
+        Battery_Data.loc['Yearly O&M Co§st at upgrade '+str(u),0] = Battery_Nominal_Capacity[u]*PriceBattery*OM_Bat
         
     Battery_Data.loc['Total actualized Battery Replacement Cost', 0] = sum(BRC_Act[(s)]*Scenario_Weight[s] for s in range(1, Number_Scenarios+1))
     
@@ -360,10 +361,11 @@ def Load_Results(instance, Optimization_Goal):
     
     TotVarCostAct = instance.Total_Variable_Cost_Act.value
     SalvageValue = instance.Salvage_Value.value
-    TotInvCost = instance.Investment_Cost.value
-    VOLL = instance.Value_Of_Lost_Load.values()
+    TotInvCost = instance.Investment_Cost.value 
+    VOLL = {}
+    for us in range(1,Number_Users+1):
+        VOLL[us] = instance.Value_Of_Lost_Load[us]
     Renewable_Units = instance.Renewable_Units.get_values()
-    
     PRJ_Info = ExcelWriter('Results/Results_Summary.xlsx')
 
     Project_Info_1 = pd.DataFrame()
@@ -438,7 +440,12 @@ def Load_Results(instance, Optimization_Goal):
         
         Project_Info_3.loc['Year '+str(y), 'Fuel Cost'] = sum(sum(sum(Generator_Energy[s,y,g,t]*Marginal_Cost_Gen[s,y,g]*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for g in range(1, Number_Generators+1))for s in range(1, Number_Scenarios+1))
         Project_Info_3.loc['Year '+str(y), 'Battery Replacement Cost'] = sum(sum((Battery_Flow_in[s,y,t]+Battery_Flow_Out[s,y,t])*Unitary_Battery_Replacement_Cost*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for s in range(1, Number_Scenarios+1))
-        Project_Info_3.loc['Year '+str(y), 'Lost Load Cost'] = sum(sum(sum(Lost_Load[s,y,us,t]*VOLL[us]*Scenario_Weight[s] for us in range(1,Number_users+1) ) for t in range(1, Number_Periods+1)) for s in range(1, Number_Scenarios+1))
+        bag = {}
+        for i in range(1,Number_Scenarios+1):
+            for h in range(1,Number_Years+1):
+                for k in range(1,Number_Periods+1):
+                    bag[(i,h,k)] = sum(Lost_Load[(i,h,m,k)]*VOLL[(m)] for m in range(1,Number_Users+1))
+        Project_Info_3.loc['Year '+str(y), 'Lost Load Cost'] = sum(sum(bag[s,y,t]*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for s in range(1, Number_Scenarios+1))
     
     Project_Info_3.to_excel(PRJ_Info, sheet_name = 'Yearly Costs Info')
 

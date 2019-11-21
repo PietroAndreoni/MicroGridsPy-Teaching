@@ -41,7 +41,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     if Renewable_Penetration > 0:
         model.RenewableEnergyPenetration = Constraint(model.upgrades, rule=Renewable_Energy_Penetration)
     
-    model.Lost_Load_tot = Constraint(model.scenarios,model.years,model.periods,rule=Sum_lost_load)
+    model.LostLoadtot = Constraint(model.scenarios, model.years, model.periods, rule=Sum_lost_load)
 
     # RES constraints
     model.RenewableEnergy = Constraint(model.scenarios, model.yu_tup, model.renewable_sources,
