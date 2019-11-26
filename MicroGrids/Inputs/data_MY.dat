@@ -1,8 +1,8 @@
 param: Periods := 8760;                                     # periods considered in one year (8760h/y in the example)
 
-param: Years := 5;                                          # total duration of the project
+param: Years := 4;                                          # total duration of the project
 
-param: Step_Duration := 20;                                  # duration (in years) of each investment decision step in which the project lifetime will be split
+param: Step_Duration := 20;                                 # duration (in years) of each investment decision step in which the project lifetime will be split
 
 param: Min_Last_Step_Duration := 1;                         # minimum duration (in years) of the last investment decision step, in case of non-homogeneous divisions of the project lifetime 
 
@@ -10,13 +10,13 @@ param: StartDate := '01/01/2019 00:00:00';                  # start date of the 
 
 param: Delta_Time := 1.0;                                   # not change 
 
-param: Battery_Investment_Cost := 0.74;                     # [USD/Wh]
+param: Battery_Investment_Cost := 0.1;                      # [USD/Wh]
 
 param: Battery_Electronic_Investment_Cost := 0.089488;      # Cost of the non-replaceable part of the battery bank [USD/Wh]
 
 param: Battery_Operation_Maintenance_Cost:= 0.02;           # O&M cost of the battery bank as a fraction of investment cost [%]
 
-param: Discount_Rate := 0.037;                                  # Real discount rate accounting also for inflation
+param: Discount_Rate := 0.037;                              # Real discount rate accounting also for inflation
 
 param: Lost_Load_Probability := 0.0;                        # [%]
 
