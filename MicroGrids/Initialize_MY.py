@@ -17,7 +17,7 @@ Data_import = open(Data_file).readlines()
 n_scenarios = int((re.findall('\d+',Data_import[34])[0]))
 n_years = int((re.findall('\d+',Data_import[2])[0]))
 n_periods = int((re.findall('\d+',Data_import[0])[0]))
-n_generators = int((re.findall('\d+',Data_import[74])[0]))
+n_generators = int((re.findall('\d+',Data_import[42])[0]))
 n_users = int((re.findall('\d+',Data_import[40])[0]))
 
 scenario = [i for i in range(1,n_scenarios+1)]

@@ -1,6 +1,6 @@
 param: Periods := 8760;                                     # periods considered in one year (8760h/y in the example)
 
-param: Years := 5;                                          # total duration of the project
+param: Years := 4;                                          # total duration of the project
 
 param: Step_Duration := 20;                                  # duration (in years) of each investment decision step in which the project lifetime will be split
 
@@ -10,13 +10,13 @@ param: StartDate := '01/01/2019 00:00:00';                  # start date of the 
 
 param: Delta_Time := 1.0;                                   # not change 
 
-param: Battery_Investment_Cost := 0.74;                     # [USD/Wh]
+param: Battery_Investment_Cost := 0.1;                     # [USD/Wh]
 
 param: Battery_Electronic_Investment_Cost := 0.089488;      # Cost of the non-replaceable part of the battery bank [USD/Wh]
 
 param: Battery_Operation_Maintenance_Cost:= 0.02;           # O&M cost of the battery bank as a fraction of investment cost [%]
 
-param: Discount_Rate := 0.037;                                  # Real discount rate accounting also for inflation
+param: Discount_Rate := 0.037;                              # Real discount rate accounting also for inflation
 
 param: Discharge_Battery_Efficiency := 0.95;                # [%]
 
@@ -38,23 +38,33 @@ param: Investment_Cost_Limit := 500000;                     # [USD]
 
 param: Renewable_Sources := 2;                              # Number of RES types
 
-param: Number_of_us_type := 4;                              # Number of user classes in the demand curve
+param: Number_of_us_type := 8;                              # Number of user classes in the demand curve
+
+param: Generator_Types := 1;                                # Number of different types of gensets 
 
 param: Renewable_Nominal_Capacity :=                        # Single unit capacity [W] of each type of RES
 1   1000
 2   30000;                                                                                                
 
 param: Value_Of_Lost_Load :=                                # [USD/Wh]
-1  0.0
+1  0.0                        
 2  0.0
 3  0.0
-4  0.0;
+4  0.0
+5  0.0
+6  0.0
+7  0.0
+8  0.0;
 
 param: Lost_Load_Probability :=                             # [%]
 1  0.0                        
 2  0.0
 3  0.0
-4  0.0;
+4  0.0
+5  0.0
+6  0.0
+7  0.0
+8  0.0;
 
 param: Renewable_Inverter_Efficiency :=                     # Efficiency [%] of the inverter connected to each RES (put 1 in case of AC bus)
 1	 0.95
@@ -71,8 +81,6 @@ param: Renewable_Lifetime :=                                # Component lifetime
 param: Renewable_Operation_Maintenance_Cost :=              # O&M cost for each type of RES as a fraction of investment cost [%]
 1  0.02                                                       
 2  0.02;                                                         
-
-param: Generator_Types := 1;                                # Number of different types of gensets 
 
 param: Generator_Investment_Cost :=                         # Investment cost for each generator type [USD/W]
 1  0.4201;
