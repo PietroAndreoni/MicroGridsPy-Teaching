@@ -18,7 +18,7 @@ param: Battery_Operation_Maintenance_Cost:= 0.02;           # O&M cost of the ba
 
 param: Discount_Rate := 0.037;                              # Real discount rate accounting also for inflation
 
-param: Lost_Load_Probability := 0.0;                        # [%]
+param: Lost_Load_Probability := 0.01;                        # [%]
 
 param: Discharge_Battery_Efficiency := 0.95;                # [%]
 
