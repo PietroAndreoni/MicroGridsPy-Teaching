@@ -13,6 +13,8 @@ ind_j = 1
 dim_i = 1             # dimension for the parameter i for multidimensional parameters
 dim_j = 1
 
+Data = [ [ [] for j in range(len(sens_par_2)  ] for i in range(len(sens_par_1)  ]
+
 for i in range(len(sens_par_1)):
     for j in range(len(sens_par_2)):
 
@@ -36,8 +38,8 @@ for i in range(len(sens_par_1)):
 
         model = AbstractModel() # define type of optimization problem
 
-        Modify_input(par_i,sens_par_i(i),line_i,ind_i,dim_i)
-        Modify_input(par_j,sens_par_j(j),line_j,ind_i,dim_i)
+        Modify_input(par_i,sens_par_i[i],line_i,ind_i,dim_i)
+        Modify_input(par_j,sens_par_j[j],line_j,ind_i,dim_i)
 
         # Optimization model    
         Model_Creation(model, Renewable_Penetration, Battery_Independency) # Creation of the Sets, parameters and variables.
