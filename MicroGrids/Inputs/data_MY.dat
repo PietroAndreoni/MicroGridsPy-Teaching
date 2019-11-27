@@ -57,14 +57,14 @@ param: Value_Of_Lost_Load :=                                # [USD/Wh]
 8  0.0;
 
 param: Lost_Load_Probability :=                             # [%]
-1  0.05                        
-2  0.05
-3  0.05
-4  0.05
-5  0.0
-6  0.0
-7  0.0
-8  0.0;
+1  0.0                        
+2  0.0
+3  0.0
+4  0.0
+5  0.05
+6  0.05
+7  0.05
+8  0.05;
 
 param: Renewable_Inverter_Efficiency :=                     # Efficiency [%] of the inverter connected to each RES (put 1 in case of AC bus)
 1	 0.95
