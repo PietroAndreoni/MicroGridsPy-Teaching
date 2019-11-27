@@ -113,17 +113,16 @@ def Load_Results(instance, Optimization_Goal):
     Scenarios = pd.DataFrame()
     foo=0         
     for i in columns:
-        Information = [[] for i in range(0,9)]
+        Information = [[] for i in range(0,8)]
         for j in  Scenarios_Periods[foo]:
-            Information[0].append(Lost_Load_tot[j])
-            Information[1].append(Battery_Flow_Out[j]) 
-            Information[2].append(Battery_Flow_in[j]) 
-            Information[3].append(Curtailment[j]) 
-            Information[4].append(Energy_Demand[j]) 
-            Information[5].append(SOC[j])
-            Information[6].append(Total_Generator_Energy[j])
-            Information[7].append(Total_Fuel[j])
-            Information[8].append(Renewable_Energy[j])        
+            Information[0].append(Battery_Flow_Out[j]) 
+            Information[1].append(Battery_Flow_in[j]) 
+            Information[2].append(Curtailment[j]) 
+            Information[3].append(Energy_Demand[j]) 
+            Information[4].append(SOC[j])
+            Information[5].append(Total_Generator_Energy[j])
+            Information[6].append(Total_Fuel[j])
+            Information[7].append(Renewable_Energy[j])        
         Scenarios=Scenarios.append(Information)
             
         for k in range(0,Number_Renewable_Sources):
@@ -140,25 +139,35 @@ def Load_Results(instance, Optimization_Goal):
                 for t in range(0,Number_Periods):
                     for g in range(0,Number_Generators):
                         Information_3[g].append(Generator_Energy[(foo+1,y+1,g+1,t+1)]) 
-        Scenarios=Scenarios.append(Information_3)        
+        Scenarios=Scenarios.append(Information_3)      
+
+         
+        for k in range(0,Number_Users):
+            Information_4 = [[] for i in range(0,Number_Users)]
+            for y in range(0, Number_Years):
+                for t in range(0,Number_Periods):
+                    for us in range(0,Number_Users):
+                        Information_4[us].append(Lost_Load[(foo+1,y+1,us+1,t+1)]) 
+        Scenarios=Scenarios.append(Information_4)          
 
         foo+=1
     
     index=[]  
-    for j in range(1, Number_Scenarios+1):   
-       index.append('Lost_Load '+str(j))
-       index.append('Battery_Flow_Out '+str(j)) 
-       index.append('Battery_Flow_in '+str(j))
-       index.append('Curtailment '+str(j))
-       index.append('Energy_Demand '+str(j))
-       index.append('SOC '+str(j))
-       index.append('Gen energy '+str(j))
-       index.append('Fuel '+str(j)+' [Lt]')
-       index.append('Total Renewable Energy '+str(j))
-       for r in range(1,Number_Renewable_Sources+1):
-           index.append('Renewable Energy: s='+str(j)+' r='+str(r))
-       for g in range(1,Number_Generators+1):
-           index.append('Generator: s='+str(j)+' g='+str(g))
+    for j in range(1, Number_Scenarios+1):  
+        index.append('Battery_Flow_Out '+str(j)) 
+        index.append('Battery_Flow_in '+str(j))
+        index.append('Curtailment '+str(j))
+        index.append('Energy_Demand '+str(j))
+        index.append('SOC '+str(j))
+        index.append('Gen energy '+str(j))
+        index.append('Fuel '+str(j)+' [Lt]')
+        index.append('Total Renewable Energy '+str(j))
+        for r in range(1,Number_Renewable_Sources+1):
+            index.append('Renewable Energy: s='+str(j)+' r='+str(r))
+        for g in range(1,Number_Generators+1):
+            index.append('Generator: s='+str(j)+' g='+str(g))
+        for us in range(1,Number_Users+1):
+            index.append('Lost_Load '+str(j)+' for user type '+str(us))    
           
     Scenarios.index = index
     Scenarios_2 = Scenarios.transpose() 
@@ -519,11 +528,12 @@ def Integer_Time_Series(instance,Scenarios, S):  #S is the scenario that we want
     Number_Periods = int(instance.Periods.extract_values()[None])
     Number_Renewable_Sources = int(instance.Renewable_Sources.extract_values()[None])
     Number_Years = int(instance.Years.extract_values()[None])
-
+    Number_Users = int(instance.Number_of_us_type.extract_values()[None])
+    
     Time_Series = pd.DataFrame(index=range(0,Number_Periods*Number_Years))
     Time_Series.index = Scenarios.index
     
-    Time_Series['Lost Load'] = Scenarios['Lost_Load '+str(S)]
+    Time_Series['Lost Load'] = sum (Scenarios['Lost_Load '+str(S)+' for user type '+str(us)] for us in range(1,Number_Users+1))
     Time_Series['Total Renewable Energy'] = Scenarios['Total Renewable Energy '+str(S)]
     for r in range(1,Number_Renewable_Sources+1):
         Time_Series['Renewable Energy '+str(r)] = Scenarios['Renewable Energy: s='+str(S)+' r='+str(r)]
