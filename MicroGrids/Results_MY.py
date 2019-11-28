@@ -841,3 +841,26 @@ def Print_Results(LCOE, NPC, TotVarCost, TotInvCost, SalvageValue, Optimization_
     print('Project LCOE = '+str(round(LCOE,4))+' USD/kWh')
     print('Project Salvage Value = '+str(round(SalvageValue,2))+' USD')
     
+
+def Modify_input(variable,value,line,ind,dim):
+
+    f = open('Inputs/data_MY.dat','r')
+    lines = f.readlines()
+
+    if dim==1:
+        lines[line-1] = "param: " + str(variable) + " := " + str(value) + ";\n"
+        lines[line] = "\n"
+    elif ind!=dim:
+        lines[line-1+dim] = str(ind) + "  " +  str(value) + "\n"
+        lines[line] = "\n"
+    else:
+        lines[line-1+dim] = str(ind) + "  " +  str(value) + ";\n"
+        lines[line] = "\n"
+
+    f.close()
+
+    f = open('Inputs/data_MY.dat','w')
+    f.writelines(lines)
+    f.close()
+
+    
