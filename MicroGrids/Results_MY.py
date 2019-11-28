@@ -10,7 +10,7 @@ import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 from pandas import ExcelWriter
 
-def Load_Results(instance, Optimization_Goal):
+def Load_Results(instance, Optimization_Goal, sens):
     
 #    from win32com.client import Dispatch
 #    import os
@@ -177,7 +177,7 @@ def Load_Results(instance, Optimization_Goal):
     
     Scenarios_yearly = pd.DataFrame()
     t_0 = 0
-    Time_Series = ExcelWriter('Results/Time_Series.xlsx')
+    Time_Series = ExcelWriter('Results/Time_Series'+sens+'.xlsx')
     
     for y in range(1,Number_Years+1):
         Scenarios_yearly = Scenarios.iloc[[t for t in range(t_0, y*Number_Periods)]]
@@ -222,7 +222,7 @@ def Load_Results(instance, Optimization_Goal):
         for u in range(1, Number_Upgrades +1):
             Data_Renewable.loc['Yearly O&M Cost at upgrade ' +str(u), Name] = Renewable_Units[u,r]*Renewable_Nominal_Capacity[r]*Renewable_Investment_Cost[r]*OyM_Renewable[r]
 
-    Data_Renewable.to_excel('Results/Renewable_Sources_Data.xlsx')    
+    Data_Renewable.to_excel('Results/Renewable_Sources_Data'+sens+'.xlsx')    
     print('Results: Renewable_Sources_Data.xlsx exported')
 
 #    wb = excel.Workbooks.Open(cwd+"\\Results\\Renewable_Sources_Data.xlsx")
@@ -243,7 +243,7 @@ def Load_Results(instance, Optimization_Goal):
     Marginal_Cost_Gen = instance.Generator_Marginal_Cost.extract_values()
     FCT_Act = instance.Total_Fuel_Cost_Act.extract_values()
     
-    Gen_data = ExcelWriter('Results/Generator_Data.xlsx')
+    Gen_data = ExcelWriter('Results/Generator_Data'+sens+'.xlsx')
     
     Generator_Data = pd.DataFrame()
     for g in range(1, Number_Generators + 1):
@@ -298,7 +298,7 @@ def Load_Results(instance, Optimization_Goal):
     OM_Bat = instance.Battery_Operation_Maintenance_Cost.value
     BRC_Act = instance.Battery_Replacement_Cost_Act.get_values()
 
-    Bat_data = ExcelWriter('Results/Battery_Data.xlsx')
+    Bat_data = ExcelWriter('Results/Battery_Data'+sens+'.xlsx')
     
     Battery_Data = pd.DataFrame()
     
@@ -357,7 +357,7 @@ def Load_Results(instance, Optimization_Goal):
     VOLL = instance.Value_Of_Lost_Load.value
     Renewable_Units = instance.Renewable_Units.get_values()
     
-    PRJ_Info = ExcelWriter('Results/Results_Summary.xlsx')
+    PRJ_Info = ExcelWriter('Results/Results_Summary'+sens+'.xlsx')
 
     Project_Info_1 = pd.DataFrame()
 
@@ -851,11 +851,9 @@ def Modify_input(variable,value,line,ind,dim):
         lines[line-1] = "param: " + str(variable) + " := " + str(value) + ";\n"
         lines[line] = "\n"
     elif ind!=dim:
-        lines[line-1+dim] = str(ind) + "  " +  str(value) + "\n"
-        lines[line] = "\n"
+        lines[line-1+ind] = str(ind) + "  " +  str(value) + "\n"
     else:
-        lines[line-1+dim] = str(ind) + "  " +  str(value) + ";\n"
-        lines[line] = "\n"
+        lines[line-1+ind] = str(ind) + "  " +  str(value) + ";\n"
 
     f.close()
 

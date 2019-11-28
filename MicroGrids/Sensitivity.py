@@ -8,7 +8,7 @@ par_j = " "                              # name of parameter i
 line_i = 29            # line in which paramater i is written in data_MY.dat (for multiD parameters it refers to the declaration line "param:  ecc")
 line_j = 0           
 
-ind_i = 1             # index of the parameter i for multimensional parameter
+ind_i = 1             # index of the parameter i for multimensional parameter (needs to be <= than corresponding dim)
 ind_j = 1
 
 dim_i = 1             # dimension for the parameter i for multidimensional parameters (set to 1 for 1D parameters)
@@ -41,7 +41,7 @@ for i in range(len(sens_par_i)):
         Model_Creation(model, Renewable_Penetration, Battery_Independency) # Creation of the Sets, parameters and variables.        
         instance = Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency) # Resolution of the instance
 
-        Result[i].append( Load_Results(instance, Optimization_Goal) ) 
+        Result[i].append( Load_Results(instance, Optimization_Goal, par_i + "=val:" + str(sens_par_i[i])) "_" + par_j + "=val:" + str(sens_par_j[j]))) 
         
         '''
         some sintax: for 1D variables you access by instance.variable_name.value
