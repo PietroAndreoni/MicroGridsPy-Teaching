@@ -41,7 +41,7 @@ for i in range(len(sens_par_i)):
         Model_Creation(model, Renewable_Penetration, Battery_Independency) # Creation of the Sets, parameters and variables.        
         instance = Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency) # Resolution of the instance
 
-        Result[i].append( Load_Results(instance, Optimization_Goal, par_i + "=val:" + str(sens_par_i[i])) "_" + par_j + "=val:" + str(sens_par_j[j]))) 
+        Result[i].append( Load_Results(instance, Optimization_Goal, par_i + "=val:" + str(sens_par_i[i])) "_" + par_j + "=val:" + str(sens_par_j[j])) 
         
         '''
         some sintax: for 1D variables you access by instance.variable_name.value
