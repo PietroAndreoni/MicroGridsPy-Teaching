@@ -142,7 +142,6 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     # Variables associated to C02 emissions
     model.Emissions = Var(model.scenarios, model.years)
     
-
     # Variables associated to the project
     model.Net_Present_Cost = Var(within=NonNegativeReals)
     model.Scenario_Net_Present_Cost = Var(model.scenarios, within=NonNegativeReals) 
@@ -155,3 +154,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.Battery_Replacement_Cost_NonAct = Var(model.scenarios,within=NonNegativeReals)
     model.Total_Scenario_Variable_Cost_Act = Var(model.scenarios,within=NonNegativeReals)
     model.Total_Scenario_Variable_Cost_NonAct = Var(model.scenarios,within=NonNegativeReals)    
+
+    # Variables associated to multioptimization algorythm
+    model.Cost_Obj = Var(within=NonNegativeReals)
+    model.Emissions_Obj = Var()

@@ -8,7 +8,7 @@ from pyomo.opt import SolverFactory
 from pyomo.environ import Objective, minimize, Constraint
 
 
-def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency,datapath="Inputs/data_MY.dat"):   
+def Instance_Creation(model, Optimization_Goal, Renewable_Penetration, Battery_Independency,datapath="Inputs/data_MY.dat"):   
     '''
     This function creates the model and call Pyomo to solve the instance of the proyect 
     
@@ -83,7 +83,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     model.ScenarioVariableCostAct = Constraint(model.scenarios,rule=Scenario_Variable_Cost_Act)    
     model.TotalVariableCostAct = Constraint(rule=Total_Variable_Cost_Act)
 
-    if Optimization_Goal == 'Operation cost':
+    if Optimization_Goal == 'Operation cost' or Optimization_Goal == 'Multiobjective':
         model.InvestmentCostLimit = Constraint(rule=Investment_Cost_Limit)
         model.OperationMaintenanceCostNonAct = Constraint(rule=Operation_Maintenance_Cost_NonAct)
         model.ScenarioLostLoadCostNonAct = Constraint(model.scenarios, rule=Scenario_Lost_Load_Cost_NonAct)
@@ -91,23 +91,27 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
         model.BatteryReplacementCostNonAct = Constraint(model.scenarios,rule=Battery_Replacement_Cost_NonAct) 
         model.ScenarioVariableCostNonAct = Constraint(model.scenarios,rule=Scenario_Variable_Cost_NonAct)     
     
-    print('Model_Resolution: Constraints imported')
+    print('Instance_Creation: Constraints imported')
     
     instance = model.create_instance(datapath) # load parameters
 
-    print('Model_Resolution: Instance created')
-    
+    print('Instance_Creation: Instance created')
+
+    return instance
+
+   
+def Instance_Resolution(instance):
     opt = SolverFactory('gurobi') # Solver use during the optimization
 
     opt.set_options('Method=2 Crossover=0 BarConvTol=1e-4 OptimalityTol=1e-4 FeasibilityTol=1e-4 IterationLimit=1000') # !! only works with GUROBI solver   
 #    opt.set_options('Method=2 BarHomogeneous=1 Crossover=0 BarConvTol=1e-4 OptimalityTol=1e-4 FeasibilityTol=1e-4 IterationLimit=1000') # !! only works with GUROBI solver   
-
-    
-    print('Model_Resolution: solver called')
+ 
+    print('Instance_Resolution: solver called')
     
     results = opt.solve(instance, tee=True) # Solving a model instance 
     
-    print('Model_Resolution: instance solved')
+    print('Instance_Resolution: instance solved')
 
     instance.solutions.load_from(results)  # Loading solution into instance
+
     return instance
