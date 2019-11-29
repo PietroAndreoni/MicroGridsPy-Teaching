@@ -18,8 +18,8 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     :return: The solution inside an object call instance.
     '''
     from Constraints_MY import  Renewable_Energy,State_of_Charge,\
-    Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out, \
-    Energy_balance, Maximun_Lost_Load,Scenario_Net_Present_Cost, Scenario_Lost_Load_Cost_Act, Scenario_Lost_Load_Cost_NonAct, Renewable_Energy_Penetration,\
+    Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out, Overall_Emissions_Obj,\
+    Energy_balance, Maximun_Lost_Load,Scenario_Net_Present_Cost, Scenario_Lost_Load_Cost_Act, Scenario_Lost_Load_Cost_NonAct, Renewable_Energy_Penetration, Overall_GHG_Emissions,\
     Investment_Cost, Operation_Maintenance_Cost_Act, Operation_Maintenance_Cost_NonAct, Battery_Replacement_Cost_Act, Battery_Replacement_Cost_NonAct, Maximun_Generator_Energy, Total_Fuel_Cost_Act, Total_Fuel_Cost_NonAct,\
     Battery_Min_Capacity, Battery_Min_Step_Capacity, Renewables_Min_Step_Units, Generator_Min_Step_Capacity, Salvage_Value, Net_Present_Cost_Obj,Total_Variable_Cost_Act, Scenario_Variable_Cost_Act, Scenario_Variable_Cost_NonAct,Total_Variable_Cost_Obj, Net_Present_Cost, Investment_Cost_Limit
       
@@ -31,6 +31,10 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     elif Optimization_Goal == 'Operation cost':
         model.ObjectiveFunction = Objective(rule=Total_Variable_Cost_Obj, sense=minimize)
         model.NetPresentCost = Constraint(rule=Net_Present_Cost)
+    elif Optimization_Goal == 'Multiobjective':
+        model.ObjectiveFunctionCost = Objective(rule=Total_Variable_Cost_Obj, sense=minimize)
+        model.NetPresentCost = Constraint(rule=Net_Present_Cost)
+        model.ObjectiveFunctionEm = Objective(rule=Overall_Emissions_Obj, sense=minimize)
     
     # CONSTRAINTS
     
@@ -40,6 +44,9 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     model.MaximunLostLoad = Constraint(model.scenarios, model.years, rule=Maximun_Lost_Load) # Maximum permissible lost load
     if Renewable_Penetration > 0:
         model.RenewableEnergyPenetration = Constraint(model.upgrades, rule=Renewable_Energy_Penetration)
+
+    #C02 constraints
+    model.Emissioneq = Constraint(model.scenarios, model.years, rule= Overall_GHG_Emissions)
     
     # RES constraints
     model.RenewableEnergy = Constraint(model.scenarios, model.yu_tup, model.renewable_sources,

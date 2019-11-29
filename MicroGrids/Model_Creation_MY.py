@@ -34,7 +34,8 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.generator_types = RangeSet(1, model.Generator_Types) # Creation of a set from 1 to the number of generators types to analized
     model.upgrades = RangeSet(1, model.Upgrades_Number) # Creation of a set from 1 to the number of investment decision steps
     model.yu_tup = Set(dimen = 2, initialize = Initialize_YearUpgrade_Tuples)  # 2D set of tuples: it associates each year to the corresponding investment decision step
-    
+    model.emission_type = Set(1, ["Direct","Embodied"])
+
     # PARAMETERS
     model.Scenario_Weight = Param(model.scenarios, within=NonNegativeReals) 
     
@@ -83,6 +84,11 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.Value_Of_Lost_Load = Param(within=NonNegativeReals) # Value of lost load in USD/W
     if Renewable_Penetration > 0:
         model.Renewable_Penetration =  Renewable_Penetration
+
+    # Parameters associated to C02 emissions
+    model.Gen_Emissions = Param(model.generator_types,model.emission_type)
+    model.Ren_Emissions = Param(model.renewable_sources,model.emission_type)
+    model.Bat_Emissions = Param(model.emission_type)
    
     # Parameters of the project
     model.Delta_Time = Param(within=NonNegativeReals) # Time step in hours
@@ -132,6 +138,9 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.Energy_Curtailment = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals) # Curtailment of RES in kWh
     model.Scenario_Lost_Load_Cost_Act = Var(model.scenarios, within=NonNegativeReals) 
     model.Scenario_Lost_Load_Cost_NonAct = Var(model.scenarios, within=NonNegativeReals)    
+
+    # Variables associated to C02 emissions
+    model.Emissions = Var(model.scenarios, model.years)
     
 
     # Variables associated to the project

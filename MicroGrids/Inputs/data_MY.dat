@@ -84,3 +84,19 @@ param: Fuel_Cost :=                                         # Fuel cost for each
 
 param: Scenario_Weight :=                                   # Occurrence probability of each scenario [%]
 1  1;
+
+param: Gen_Emissions :=                                     # Emissions from the generator - Direct emission in [tC02/KWh], Embodied in [tC02/yr]
+1  "Direct"     0.5
+1  "Embodied"   1000
+2  "Direct"     0.5
+2  "Embodied"   1000;
+
+param: Ren_Emissions :=                                     # Emissions from the RES - Direct emission in [tC02/KWh], Embodied in [tC02/yr]
+1  "Direct"     0.5
+1  "Embodied"   1000
+2  "Direct"     0.5
+2  "Embodied"   1000;
+
+param: Bat_Emissions :=                                     # Emissions from the battery bank - Direct emission in [tC02/KWh], Embodied in [tC02/yr]
+"Direct"      0.5
+"Embodied"    1000;
