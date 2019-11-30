@@ -8,7 +8,7 @@ from pyomo.opt import SolverFactory
 from pyomo.environ import Objective, minimize, Constraint
 
 
-def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency,datapath="Inputs/data_MY.dat"):   
+def Instance_creation(model, Optimization_Goal, Renewable_Penetration, Battery_Independency,datapath="Inputs/data_MY.dat"):   
     '''
     This function creates the model and call Pyomo to solve the instance of the proyect 
     
@@ -87,8 +87,11 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     print('Model_Resolution: Constraints imported')
     
     instance = model.create_instance(datapath) # load parameters
-
     print('Model_Resolution: Instance created')
+    
+    return instance
+
+def Instance_Resolution(instance)
     
     opt = SolverFactory('gurobi') # Solver use during the optimization
 
