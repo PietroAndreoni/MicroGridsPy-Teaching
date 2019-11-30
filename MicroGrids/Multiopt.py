@@ -1,5 +1,4 @@
-from pyomo import value
-from pyomo.environ import AbstractModel
+from pyomo.environ import AbstractModel, value
 from numpy import arange
 
 ################################################################################################
@@ -10,7 +9,7 @@ from numpy import arange
 from Results_MY import Plot_Energy_Total, Load_Results, Integer_Time_Series, Print_Results, Energy_Mix
 from Model_Creation_MY import Model_Creation
 from Model_Resolution_MY import Instance_Creation, Instance_Resolution
-   
+from Constraints_MY import Overall_Emissions_Obj
     
 Optimization_Goal = 'Multiobjective'  
 
@@ -50,8 +49,31 @@ instance.Emissions_Obj.fix(min_emissions)
 results = Instance_Resolution(instance)
 max_varcost = value(results.Cost_Obj)
 
+# ## set of Pareto efficient solution generation
 n = 5
 steps = arange(min_emissions,max_emissions,n)
 
+instance.del_component(instance.OBjectiveFunctionCost)
+instance.del_component(instance.ObjectiveFunctionEm)
+
+instance.e = Param(initialize=0, mutable=True)
+instance.delta = Param(initialize=0.00001)
+instance.s = Var(within=NonNegativeReals)
+instance.Obj = Var(within=NonNegativeReals)
+instance.Em_costr = Constraint(rule=Overall_Emissions_Obj)
+
+instance.Objnew = Objective (expr = model.Obj == model.Cost_Obj + model.delta * model.s, sense=minimize)
+instance.C_e = Constraint(expr = model.Emission_Obj - model.s == model.e)
+
+cost = []
+emissions = []
+
 for i in steps:
-    
+    instance.e = i
+    solver.solve(instance)
+    cost.append(value(instance.Cost_Obj))
+    emissions.append(value(instance.Emission_Obj))
+
+plt.plot(cost,emissions,'o-.')
+plt.title('efficient Pareto-front')
+plt.grid(True)

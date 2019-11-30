@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 #     X2 <= 40 <br>
 #     5 X1 + 4 X2 <= 200 <br>
 
-model = ConcreteModel()
+model = AbstractModel()
 
 model.X1 = Var(within=NonNegativeReals)
 model.X2 = Var(within=NonNegativeReals)
@@ -32,53 +32,55 @@ model.C_f2 = Constraint(expr= model.f2 == 3 * model.X1 + 4 * model.X2)
 model.O_f1 = Objective(expr= model.f1  , sense=maximize)
 model.O_f2 = Objective(expr= model.f2  , sense=maximize)
 
+instance = model.create_instance()
+
 # ## max f1
-model.O_f2.deactivate()
+instance.O_f2.deactivate()
 
 solver = SolverFactory('gurobi')
-solver.solve(model);
+solver.solve(instance);
 
-f1_max = value(model.f1)
+f1_max = value(instance.f1)
 
 # ## max f2
 
-model.O_f2.activate()
-model.O_f1.deactivate()
+instance.O_f2.activate()
+instance.O_f1.deactivate()
 
-solver.solve(model);
+solver.solve(instance);
 
-f2_max = value(model.f2)
+f2_max = value(instance.f2)
 
 # ## min f1
-model.O_f2.deactivate()
-model.O_f1.activate()
+instance.O_f2.deactivate()
+instance.O_f1.activate()
 
-model.f2.fix(f2_max)
+instance.f2.fix(f2_max)
 
-f1_min = value(model.f1)
+f1_min = value(instance.f1)
 
 
 # ## min f2 
-model.O_f2.activate()
-model.O_f1.deactivate()
+instance.O_f2.activate()
+instance.O_f1.deactivate()
 
-model.f2.unfix()
-model.f1.fix(f1_max)
+instance.f2.unfix()
+instance.f1.fix(f1_max)
 
-solver.solve(model)
+solver.solve(instance)
 
-f2_min = value(model.f2)
+f2_min = value(instance.f2)
 
-print('Each iteration will keep f2 lower than some values between f2_min and f2_max, so ['       + str(f2_min) + ', ' + str(f2_max) + ']')
+print('Each iteration will keep f2 lower than some values between f2_min and f2_max, so [' + str(f2_min) + ', ' + str(f2_max) + ']')
 
 
 # ## apply normal $\epsilon$-Constraint
 
-model.O_f1.activate()
-model.O_f2.deactivate()
-model.f1.unfix()
+instance.O_f1.activate()
+instance.O_f2.deactivate()
+instance.f1.unfix()
 
-model.e = Param(initialize=0, mutable=True)
+instance.e = Param(initialize=0, mutable=True)
 
 n = 4
 step = int((f2_max - f2_min) / n)
@@ -89,25 +91,25 @@ steps = list(range(int(f2_min),int(f2_max+step),step))
 # max   f2 + delta*epsilon <br>
 #  s.t. f2 - s = e
 
-model.del_component(model.O_f1)
-model.del_component(model.O_f2)
+instance.del_component(instance.O_f1)
+instance.del_component(instance.O_f2)
 
-model.delta = Param(initialize=0.00001)
+instance.delta = Param(initialize=0.00001)
 
-model.s = Var(within=NonNegativeReals)
+instance.s = Var(within=NonNegativeReals)
 
-model.O_f1 = Objective(expr = model.f1 + model.delta * model.s, sense=maximize)
+instance.O_f1 = Objective(expr = instance.f1 + instance.delta * instance.s, sense=maximize)
 
-model.C_e = Constraint(expr = model.f2 - model.s == model.e)
+instance.C_e = Constraint(expr = instance.f2 - instance.s == instance.e)
 
 
 x1_l = []
 x2_l = []
 for i in steps:
-    model.e = i
-    solver.solve(model);
-    x1_l.append(value(model.X1))
-    x2_l.append(value(model.X2))
+    instance.e = i
+    solver.solve(instance);
+    x1_l.append(value(instance.X1))
+    x2_l.append(value(instance.X2))
 plt.plot(x1_l,x2_l,'o-.');
 plt.title('efficient Pareto-front');
 plt.grid(True);
