@@ -34,7 +34,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.generator_types = RangeSet(1, model.Generator_Types) # Creation of a set from 1 to the number of generators types to analized
     model.upgrades = RangeSet(1, model.Upgrades_Number) # Creation of a set from 1 to the number of investment decision steps
     model.yu_tup = Set(dimen = 2, initialize = Initialize_YearUpgrade_Tuples)  # 2D set of tuples: it associates each year to the corresponding investment decision step
-    model.emission_type = Set(1, ["Direct","Embodied"])
+    model.emission_type = Set(initialize = ["Direct","Embodied"])
 
     # PARAMETERS
     model.Scenario_Weight = Param(model.scenarios, within=NonNegativeReals) 

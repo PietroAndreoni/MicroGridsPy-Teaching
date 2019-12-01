@@ -329,14 +329,16 @@ def Scenario_Variable_Cost_NonAct(model, s):
 
 
 def Total_Variable_Cost_Obj(model):
-    return model.Cost_Obj == (sum(model.Total_Scenario_Variable_Cost_NonAct[s]*model.Scenario_Weight[s] for s in model.scenarios))
+    return sum(model.Total_Scenario_Variable_Cost_NonAct[s]*model.Scenario_Weight[s] for s in model.scenarios)
 
 def Total_Variable_Cost_Act(model):
     return model.Total_Variable_Cost_Act == (sum(model.Total_Scenario_Variable_Cost_Act[s]*model.Scenario_Weight[s] for s in model.scenarios))
 
 def Overall_GHG_Emissions(model,s,y):
-    return model.Emissions[s,y] = sum( sum(model.Total_Generator_Energy[s,g,y,t]*model.Gen_Emissions[g,"Direct"] for g in model.generator_types) + sum(model.Total_Renewable_Energy[s,res,y,t]*model.Ren_Emissions[res,"Direct"] for res in model.renewable_sources) ) for t in model.periods) 
-        + sum(model.Gen_Emissions[g,"Embodied"] for g in model.generator_types) + sum(model.Ren_Emissions[res,"Embodied"] for res in model.renewable_sources) + model.Bat_Emissions["Embodied"]
+    return model.Emissions[s,y] == sum( sum(model.Total_Generator_Energy[s,y,g,t]*model.Gen_Emissions[g,"Direct"] for g in model.generator_types) + sum(model.Total_Renewable_Energy[s,y,res,t]*model.Ren_Emissions[res,"Direct"] for res in model.renewable_sources) for t in model.periods)  + sum(model.Gen_Emissions[g,"Embodied"] for g in model.generator_types) + sum(model.Ren_Emissions[res,"Embodied"] for res in model.renewable_sources) + model.Bat_Emissions["Embodied"]
 
-def Overall_Emissions_Obj(model);
+def Overall_Emissions_Obj(model):
+    return sum( sum(model.Emissions[s,y] for y in model.years) for s in model.scenarios) 
+
+def Overall_Emissions_Act(model):
     return model.Emissions_Obj == ( sum( sum(model.Emissions[s,y] for y in model.years) for s in model.scenarios) )

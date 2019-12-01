@@ -107,6 +107,8 @@ x1_l = []
 x2_l = []
 for i in steps:
     instance.e = i
+    instance.f1.setlb(f1_min)
+    instance.f1.setub(f1_max)
     solver.solve(instance);
     x1_l.append(value(instance.X1))
     x2_l.append(value(instance.X2))

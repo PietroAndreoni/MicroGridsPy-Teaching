@@ -1,6 +1,3 @@
-from pyomo.environ import AbstractModel, value
-from numpy import arange
-
 ################################################################################################
 ################################## VARIABLE DEMAND MODEL #######################################
 ################################################################################################
@@ -10,6 +7,9 @@ from Results_MY import Plot_Energy_Total, Load_Results, Integer_Time_Series, Pri
 from Model_Creation_MY import Model_Creation
 from Model_Resolution_MY import Instance_Creation, Instance_Resolution
 from Constraints_MY import Overall_Emissions_Obj
+from pyomo.environ import *
+from numpy import arange
+import matplotlib.pyplot as plt
     
 Optimization_Goal = 'Multiobjective'  
 
@@ -24,7 +24,8 @@ instance = Instance_Creation(model, Optimization_Goal, Renewable_Penetration, Ba
 # ## minumum variable costs
 instance.ObjectiveFunctionEm.deactivate()
 results = Instance_Resolution(instance)
-min_varcost = value(results.Cost_Obj)
+min_varcost = value(results.Total_Variable_Cost_Act)
+print("first element of lexicographic matrix costructed. The optimum variable cost is" + str(min_varcost))
 
 # ## minimum emissions
 instance.ObjectiveFunctionCost.deactivate()
@@ -32,47 +33,52 @@ instance.ObjectiveFunctionEm.activate()
 
 results = Instance_Resolution(instance) 
 min_emissions = value(results.Emissions_Obj)
+print("secobd element of lexicographic matrix costructed. The optimum emission level is " + str(min_emissions))
 
 # ## maximum emissions
-instance.Cost_Obj.fix(min_varcost)
+instance.Total_Variable_Cost_Act.fix(min_varcost)
 
 results = Instance_Resolution(instance)
-max_emissions = value(results.Emission_Obj)
-
+max_emissions = value(results.Emissions_Obj)
+print("third element of lexicographic matrix costructed. The upper bound for emissions is " + str(max_emissions))
 
 # ## maximum variable costs
 instance.ObjectiveFunctionCost.activate()
 instance.ObjectiveFunctionEm.deactivate()
-instance.Cost_Obj.unfix()
+instance.Total_Variable_Cost_Act.unfix()
 instance.Emissions_Obj.fix(min_emissions)
 
 results = Instance_Resolution(instance)
-max_varcost = value(results.Cost_Obj)
+max_varcost = value(results.Total_Variable_Cost_Act)
+print("fourth element of lexicographic matrix costructed. The upper bound for costs is " + str(max_varcost))
 
 # ## set of Pareto efficient solution generation
 n = 5
-steps = arange(min_emissions,max_emissions,n)
+steps = arange(min_emissions,max_emissions,(max_emissions-min_emissions)/n)
 
-instance.del_component(instance.OBjectiveFunctionCost)
+instance.del_component(instance.ObjectiveFunctionCost)
 instance.del_component(instance.ObjectiveFunctionEm)
 
 instance.e = Param(initialize=0, mutable=True)
-instance.delta = Param(initialize=0.00001)
+instance.delta = Param(initialize=0.001)
 instance.s = Var(within=NonNegativeReals)
-instance.Obj = Var(within=NonNegativeReals)
-instance.Em_costr = Constraint(rule=Overall_Emissions_Obj)
+instance.Objnew = Objective (expr = instance.Total_Variable_Cost_Act + instance.delta * instance.s, sense=minimize)
+instance.C_e = Constraint(expr = instance.Emissions_Obj - instance.s == instance.e)
 
-instance.Objnew = Objective (expr = model.Obj == model.Cost_Obj + model.delta * model.s, sense=minimize)
-instance.C_e = Constraint(expr = model.Emission_Obj - model.s == model.e)
+instance.Total_Variable_Cost_Act.setub(max_varcost)
+instance.Total_Variable_Cost_Act.setlb(min_varcost)
+
+print("multi-optimiziation instance constructed. Starting iterations")
 
 cost = []
 emissions = []
 
 for i in steps:
     instance.e = i
-    solver.solve(instance)
-    cost.append(value(instance.Cost_Obj))
-    emissions.append(value(instance.Emission_Obj))
+    results = Instance_Resolution(instance)
+    cost.append(value(results.Total_Variable_Cost_Act))
+    emissions.append(value(results.Emissions_Obj))
+    print("iteration finished")
 
 plt.plot(cost,emissions,'o-.')
 plt.title('efficient Pareto-front')

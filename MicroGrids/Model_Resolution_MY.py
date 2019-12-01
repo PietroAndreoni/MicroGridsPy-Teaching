@@ -18,7 +18,7 @@ def Instance_Creation(model, Optimization_Goal, Renewable_Penetration, Battery_I
     :return: The solution inside an object call instance.
     '''
     from Constraints_MY import  Renewable_Energy,State_of_Charge,\
-    Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out, Overall_Emissions_Obj,\
+    Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out, Overall_Emissions_Obj,Overall_Emissions_Act,\
     Energy_balance, Maximun_Lost_Load,Scenario_Net_Present_Cost, Scenario_Lost_Load_Cost_Act, Scenario_Lost_Load_Cost_NonAct, Renewable_Energy_Penetration, Overall_GHG_Emissions,\
     Investment_Cost, Operation_Maintenance_Cost_Act, Operation_Maintenance_Cost_NonAct, Battery_Replacement_Cost_Act, Battery_Replacement_Cost_NonAct, Maximun_Generator_Energy, Total_Fuel_Cost_Act, Total_Fuel_Cost_NonAct,\
     Battery_Min_Capacity, Battery_Min_Step_Capacity, Renewables_Min_Step_Units, Generator_Min_Step_Capacity, Salvage_Value, Net_Present_Cost_Obj,Total_Variable_Cost_Act, Scenario_Variable_Cost_Act, Scenario_Variable_Cost_NonAct,Total_Variable_Cost_Obj, Net_Present_Cost, Investment_Cost_Limit
@@ -82,6 +82,7 @@ def Instance_Creation(model, Optimization_Goal, Renewable_Penetration, Battery_I
     model.BatteryReplacementCostAct = Constraint(model.scenarios,rule=Battery_Replacement_Cost_Act) 
     model.ScenarioVariableCostAct = Constraint(model.scenarios,rule=Scenario_Variable_Cost_Act)    
     model.TotalVariableCostAct = Constraint(rule=Total_Variable_Cost_Act)
+    model.OverallEmissionsAct = Constraint(rule=Overall_Emissions_Act)
 
     if Optimization_Goal == 'Operation cost' or Optimization_Goal == 'Multiobjective':
         model.InvestmentCostLimit = Constraint(rule=Investment_Cost_Limit)
