@@ -36,63 +36,63 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.yu_tup = Set(dimen = 2, initialize = Initialize_YearUpgrade_Tuples)  # 2D set of tuples: it associates each year to the corresponding investment decision step
     
     # PARAMETERS
-    model.Scenario_Weight = Param(model.scenarios, within=NonNegativeReals) 
+    model.Scenario_Weight = Param(model.scenarios, within=NonNegativeReals, mutable=True) 
     
     # Parameters of RES   
     model.Renewable_Nominal_Capacity = Param(model.renewable_sources,
-                                             within=NonNegativeReals) # Nominal capacity of the RES in W/unit
-    model.Renewable_Inverter_Efficiency = Param(model.renewable_sources) # Efficiency of the inverter in %
+                                             within=NonNegativeReals, mutable=True) # Nominal capacity of the RES in W/unit
+    model.Renewable_Inverter_Efficiency = Param(model.renewable_sources, mutable=True) # Efficiency of the inverter in %
     model.Renewable_Investment_Cost = Param(model.renewable_sources,
-                                           within=NonNegativeReals) # Cost of RES in USD/W
+                                           within=NonNegativeReals, mutable=True) # Cost of RES in USD/W
     model.Renewable_Lifetime = Param(model.renewable_sources,
-                                             within=NonNegativeReals)
+                                             within=NonNegativeReals, mutable=True)
     model.Renewable_Energy_Production = Param(model.scenarios,model.renewable_sources,
                                               model.periods, within=NonNegativeReals, 
-                                              initialize=Initialize_Renewable_Energy) # Energy production of a RES in W
+                                              initialize=Initialize_Renewable_Energy, mutable=True) # Energy production of a RES in W
     
     # Parameters of the battery bank
-    model.Charge_Battery_Efficiency = Param() # Efficiency of the charge of the battery in  %
-    model.Discharge_Battery_Efficiency = Param() # Efficiency of the discharge of the battery in %
-    model.Depth_of_Discharge = Param() # Depth of discharge of the battery (Depth_of_Discharge) in %
-    model.Maximum_Battery_Charge_Time = Param(within=NonNegativeReals) # Minimum time of charge of the battery in hours
-    model.Maximum_Battery_Discharge_Time = Param(within=NonNegativeReals) # Maximum time of discharge of the battery in hours                     
-    model.Battery_Investment_Cost = Param() # Cost of battery 
-    model.Battery_Electronic_Investment_Cost = Param(within=NonNegativeReals)
-    model.Battery_Cycles = Param(within=NonNegativeReals)
+    model.Charge_Battery_Efficiency = Param(mutable=True) # Efficiency of the charge of the battery in  %
+    model.Discharge_Battery_Efficiency = Param(mutable=True) # Efficiency of the discharge of the battery in %
+    model.Depth_of_Discharge = Param(mutable=True) # Depth of discharge of the battery (Depth_of_Discharge) in %
+    model.Maximum_Battery_Charge_Time = Param(within=NonNegativeReals, mutable=True) # Minimum time of charge of the battery in hours
+    model.Maximum_Battery_Discharge_Time = Param(within=NonNegativeReals, mutable=True) # Maximum time of discharge of the battery in hours                     
+    model.Battery_Investment_Cost = Param(mutable=True) # Cost of battery 
+    model.Battery_Electronic_Investment_Cost = Param(within=NonNegativeReals, mutable=True)
+    model.Battery_Cycles = Param(within=NonNegativeReals, mutable=True)
     model.Unitary_Battery_Replacement_Cost = Param(within=NonNegativeReals, 
-                                          initialize=Unitary_Battery_Replacement_Cost)
-    model.Battery_Initial_SOC = Param(within=NonNegativeReals)
+                                          initialize=Unitary_Battery_Replacement_Cost, mutable=True)
+    model.Battery_Initial_SOC = Param(within=NonNegativeReals, mutable=True)
     if  Battery_Independency > 0:
-        model.Battery_Independency = Battery_Independency
-        model.Battery_Min_Capacity = Param(model.upgrades, initialize=Min_Bat_Capacity)
+        model.Battery_Independency = Param(default=Battery_Independency, mutable=True)
+        model.Battery_Min_Capacity = Param(model.upgrades, initialize=Min_Bat_Capacity, mutable=True)
   
     # Parameters of the diesel generator
-    model.Generator_Efficiency = Param(model.generator_types) # Generator efficiency to trasform heat into electricity %
-    model.Lower_Heating_Value = Param(model.generator_types) # Low heating value of the diesel in W/L
-    model.Fuel_Cost = Param(model.generator_types, within=NonNegativeReals)
+    model.Generator_Efficiency = Param(model.generator_types, mutable=True) # Generator efficiency to trasform heat into electricity %
+    model.Lower_Heating_Value = Param(model.generator_types, mutable=True) # Low heating value of the diesel in W/L
+    model.Fuel_Cost = Param(model.generator_types, within=NonNegativeReals, mutable=True)
     model.Generator_Investment_Cost = Param(model.generator_types,
-                                           within=NonNegativeReals) # Cost of the diesel generator
+                                           within=NonNegativeReals, mutable=True) # Cost of the diesel generator
     model.Generator_Marginal_Cost = Param(model.scenarios, model.years, model.generator_types,
-                                            initialize=Generator_Marginal_Cost)   
+                                            initialize=Generator_Marginal_Cost, mutable=True)   
     model.Generator_Lifetime = Param(model.generator_types,
-                                           within=NonNegativeReals)    
+                                           within=NonNegativeReals, mutable=True)    
     # Parameters of the Energy balance                  
     model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 
-                                initialize=Initialize_Demand) # Energy Energy_Demand in W 
-    model.Lost_Load_Probability = Param(within=NonNegativeReals) # Lost load probability in %
-    model.Value_Of_Lost_Load = Param(within=NonNegativeReals) # Value of lost load in USD/W
+                                initialize=Initialize_Demand, mutable=True) # Energy Energy_Demand in W 
+    model.Lost_Load_Probability = Param(within=NonNegativeReals, mutable=True) # Lost load probability in %
+    model.Value_Of_Lost_Load = Param(within=NonNegativeReals, mutable=True) # Value of lost load in USD/W
     if Renewable_Penetration > 0:
-        model.Renewable_Penetration =  Renewable_Penetration
+        model.Renewable_Penetration = Param(default=Renewable_Penetration, mutable=True)
    
     # Parameters of the project
     model.Delta_Time = Param(within=NonNegativeReals) # Time step in hours
     model.Renewable_Operation_Maintenance_Cost = Param(model.renewable_sources,
-                                                       within=NonNegativeReals) # Percentage of the total investment spend in operation and management of solar panels in each period in %                                             
-    model.Battery_Operation_Maintenance_Cost = Param(within=NonNegativeReals) # Percentage of the total investment spend in operation and management of solar panels in each period in %
+                                                       within=NonNegativeReals, mutable=True) # Percentage of the total investment spend in operation and management of solar panels in each period in %                                             
+    model.Battery_Operation_Maintenance_Cost = Param(within=NonNegativeReals, mutable=True) # Percentage of the total investment spend in operation and management of solar panels in each period in %
     model.Generator_Operation_Maintenance_Cost = Param(model.generator_types,
-                                                       within=NonNegativeReals) # Percentage of the total investment spend in operation and management of solar panels in each period in %
+                                                       within=NonNegativeReals, mutable=True) # Percentage of the total investment spend in operation and management of solar panels in each period in %
     model.Discount_Rate = Param() # Discount rate of the project in %
-    model.Investment_Cost_Limit = Param(within=NonNegativeReals)
+    model.Investment_Cost_Limit = Param(within=NonNegativeReals, mutable=True)
     
     
     # VARIABLES
