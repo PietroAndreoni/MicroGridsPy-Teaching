@@ -36,7 +36,8 @@ def Instance_Creation(model, Optimization_Goal, Renewable_Penetration, Battery_I
         model.NetPresentCost = Constraint(rule=Net_Present_Cost)
         model.ObjectiveFunctionEm = Objective(rule=Overall_Emissions_Obj, sense=minimize)
     elif Optimization_Goal == 'Multiobjective_NPC':
-        model.ObjectiveFuntionCost = Objective(rule=Net_Present_Cost_Obj, sense=minimize)
+        model.ObjectiveFunctionCost = Objective(rule=Net_Present_Cost_Obj, sense=minimize)
+        model.NetPresentCost = Constraint(rule=Net_Present_Cost)
         model.ObjectiveFunctionEm = Objective(rule=Overall_Emissions_Obj, sense=minimize)
     
     # CONSTRAINTS

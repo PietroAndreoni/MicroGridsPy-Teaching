@@ -25,9 +25,9 @@ instance = Instance_Creation(model, Optimization_Goal, Renewable_Penetration, Ba
 instance.ObjectiveFunctionEm.deactivate()
 results = Instance_Resolution(instance)
 
-if OptimizationGoal == 'Multiobjective_Operation Cost'
+if Optimization_Goal == 'Multiobjective_Operation Cost':
     min_cost = value(results.Total_Variable_Cost_Act)
-elif OptimizationGoal == 'Multiobjective_NPC'
+elif Optimization_Goal == 'Multiobjective_NPC':
     min_cost = value(results.Net_Present_Cost)    
 print("first element of lexicographic matrix costructed. The optimum variable cost is " + str(min_cost))
 
@@ -40,9 +40,9 @@ min_emissions = value(results.Emissions_Obj)
 print("secobd element of lexicographic matrix costructed. The optimum emission level is " + str(min_emissions))
 
 # ## maximum emissions
-if OptimizationGoal == 'Multiobjective_Operation Cost'
+if Optimization_Goal == 'Multiobjective_Operation Cost':
     instance.Total_Variable_Cost_Act.fix(min_cost)
-elif OptimizationGoal == 'Multiobjective_NPC'
+elif Optimization_Goal == 'Multiobjective_NPC':
     instance.Net_Present_Cost.fix(min_cost)
 
 results = Instance_Resolution(instance)
@@ -52,18 +52,18 @@ print("third element of lexicographic matrix costructed. The upper bound for emi
 # ## maximum variable costs
 instance.ObjectiveFunctionCost.activate()
 instance.ObjectiveFunctionEm.deactivate()
-if OptimizationGoal == 'Multiobjective_Operation Cost'
+if Optimization_Goal == 'Multiobjective_Operation Cost':
     instance.Total_Variable_Cost_Act.unfix()
-elif OptimizationGoal == 'Multiobjective_NPC'
+elif Optimization_Goal == 'Multiobjective_NPC':
     instance.Net_Present_Cost.unfix()
     
 instance.Emissions_Obj.fix(min_emissions)
 
 results = Instance_Resolution(instance)
 
-if OptimizationGoal == 'Multiobjective_Operation Cost'
+if Optimization_Goal == 'Multiobjective_Operation Cost':
     max_cost = value(results.Total_Variable_Cost_Act)
-elif OptimizationGoal == 'Multiobjective_NPC'
+elif Optimization_Goal == 'Multiobjective_NPC':
     max_cost = value(results.Net_Present_Cost)  
 print("fourth element of lexicographic matrix costructed. The upper bound for costs is " + str(max_cost))
 
@@ -84,10 +84,10 @@ instance.Objnew = Objective (expr = instance.Total_Variable_Cost_Act + instance.
 instance.C_e = Constraint(expr = instance.Emissions_Obj - instance.s == instance.e)
 '''
 
-if OptimizationGoal == 'Multiobjective_Operation Cost'
+if Optimization_Goal == 'Multiobjective_Operation Cost':
     instance.Total_Variable_Cost_Act.setub(max_cost)
     instance.Total_Variable_Cost_Act.setlb(min_cost)
-elif OptimizationGoal == 'Multiobjective_NPC'
+elif Optimization_Goal == 'Multiobjective_NPC':
     instance.Net_Present_Cost.setub(max_cost)
     instance.Net_Present_Cost.setlb(min_cost)
 print("multi-optimiziation instance constructed. Starting iterations")
@@ -99,9 +99,9 @@ for i in steps:
     instance.Emissions_Obj.fix(i)
 #    instance.e = i          #uncomment and comment previous line if ure using method2
     results = Instance_Resolution(instance)    
-    if OptimizationGoal == 'Multiobjective_Operation Cost'
+    if Optimization_Goal == 'Multiobjective_Operation Cost':
         cost.append(value(results.Total_Variable_Cost_Act))
-    elif OptimizationGoal == 'Multiobjective_NPC'
+    elif Optimization_Goal == 'Multiobjective_NPC':
         cost.append(value(results.Net_Present_Cost))
     emissions.append(value(results.Emissions_Obj))
     print("iteration finished")
