@@ -31,9 +31,12 @@ def Instance_Creation(model, Optimization_Goal, Renewable_Penetration, Battery_I
     elif Optimization_Goal == 'Operation cost':
         model.ObjectiveFunction = Objective(rule=Total_Variable_Cost_Obj, sense=minimize)
         model.NetPresentCost = Constraint(rule=Net_Present_Cost)
-    elif Optimization_Goal == 'Multiobjective':
+    elif Optimization_Goal == 'Multiobjective_Operation Cost':
         model.ObjectiveFunctionCost = Objective(rule=Total_Variable_Cost_Obj, sense=minimize)
         model.NetPresentCost = Constraint(rule=Net_Present_Cost)
+        model.ObjectiveFunctionEm = Objective(rule=Overall_Emissions_Obj, sense=minimize)
+    elif Optimization_Goal == 'Multiobjective_NPC':
+        model.ObjectiveFuntionCost = Objective(rule=Net_Present_Cost_Obj, sense=minimize)
         model.ObjectiveFunctionEm = Objective(rule=Overall_Emissions_Obj, sense=minimize)
     
     # CONSTRAINTS
@@ -104,8 +107,8 @@ def Instance_Creation(model, Optimization_Goal, Renewable_Penetration, Battery_I
 def Instance_Resolution(instance):
     opt = SolverFactory('gurobi') # Solver use during the optimization
 
-    opt.set_options('Method=2 Crossover=0 BarConvTol=1e-4 OptimalityTol=1e-4 FeasibilityTol=1e-4 IterationLimit=1000') # !! only works with GUROBI solver   
-#    opt.set_options('Method=2 BarHomogeneous=1 Crossover=0 BarConvTol=1e-4 OptimalityTol=1e-4 FeasibilityTol=1e-4 IterationLimit=1000') # !! only works with GUROBI solver   
+#    opt.set_options('Method=2 Crossover=0 BarConvTol=1e-4 OptimalityTol=1e-4 FeasibilityTol=1e-4 IterationLimit=1000') # !! only works with GUROBI solver   
+    opt.set_options('Method=2 BarHomogeneous=1 Crossover=0 BarConvTol=1e-4 OptimalityTol=1e-4 FeasibilityTol=1e-4 IterationLimit=1000') # !! only works with GUROBI solver   
  
     print('Instance_Resolution: solver called')
     
