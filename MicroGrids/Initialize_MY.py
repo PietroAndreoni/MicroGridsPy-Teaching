@@ -32,7 +32,7 @@ This section imports the multi-year Demand and creates a Multi-indexed pd.DataFr
 Demand = pd.read_excel('Inputs/Demand.xls')
 Energy_Demand_Series = pd.Series()
 
-for i in range(0,n_years*n_scenarios*n_users):
+for i in range(1,n_years*n_scenarios*n_users+1):
     dum = Demand[i][:]
     Energy_Demand_Series = pd.concat([Energy_Demand_Series,dum])
 
@@ -49,7 +49,7 @@ Energy_Demand_2 = pd.DataFrame()
 for s in scenario:
     Energy_Demand_Series_2 = pd.Series()
     for y in year:
-        dum_2 = sum(Demand[(s-1)*n_years*n_users + (y-1)*n_users + (us-1)][:] for us in user)
+        dum_2 = sum(Demand[(s-1)*n_years*n_users + (y-1)*n_users + us][:] for us in user) #???
         Energy_Demand_Series_2 = pd.concat([Energy_Demand_Series_2,dum_2])
     Energy_Demand_2.loc[:,s] = Energy_Demand_Series_2
 

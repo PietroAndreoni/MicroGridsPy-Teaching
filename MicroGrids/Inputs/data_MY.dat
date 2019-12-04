@@ -38,7 +38,7 @@ param: Investment_Cost_Limit := 700000;                     # [USD]
 
 param: Renewable_Sources := 2;                              # Number of RES types
 
-param: Number_of_us_type := 11;                              # Number of user classes in the demand curve
+param: Number_of_us_type := 11;                             # Number of user classes in the demand curve
 
 param: Generator_Types := 2;                                # Number of different types of gensets 
 
