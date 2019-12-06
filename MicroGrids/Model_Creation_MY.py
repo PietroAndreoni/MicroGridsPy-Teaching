@@ -75,7 +75,9 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     model.Generator_Marginal_Cost = Param(model.scenarios, model.years, model.generator_types,
                                             initialize=Generator_Marginal_Cost)   
     model.Generator_Lifetime = Param(model.generator_types,
-                                           within=NonNegativeReals)    
+                                           within=NonNegativeReals)   
+    model.Yearly_Fuel_Limit = Param(model.generator_types, within=NonNegativeReals)  #Yearly limit on fuel availability in liters
+ 
     # Parameters of the Energy balance                  
     model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 
                                 initialize=Initialize_Demand) # Energy Energy_Demand in W 

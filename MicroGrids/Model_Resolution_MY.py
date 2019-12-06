@@ -19,7 +19,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     '''
     from Constraints_MY import  Renewable_Energy,State_of_Charge,\
     Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out, \
-    Energy_balance, Maximun_Lost_Load,Scenario_Net_Present_Cost, Scenario_Lost_Load_Cost_Act, Scenario_Lost_Load_Cost_NonAct, Renewable_Energy_Penetration,\
+    Energy_balance, Maximun_Lost_Load,Scenario_Net_Present_Cost, Scenario_Lost_Load_Cost_Act, Scenario_Lost_Load_Cost_NonAct, Renewable_Energy_Penetration,Yearly_Fuel_Limit\
     Investment_Cost, Operation_Maintenance_Cost_Act, Operation_Maintenance_Cost_NonAct, Battery_Replacement_Cost_Act, Battery_Replacement_Cost_NonAct, Maximun_Generator_Energy, Total_Fuel_Cost_Act, Total_Fuel_Cost_NonAct,\
     Battery_Min_Capacity, Battery_Min_Step_Capacity, Renewables_Min_Step_Units, Generator_Min_Step_Capacity, Salvage_Value, Net_Present_Cost_Obj,Total_Variable_Cost_Act, Scenario_Variable_Cost_Act, Scenario_Variable_Cost_NonAct,Total_Variable_Cost_Obj, Net_Present_Cost, Investment_Cost_Limit
       
@@ -64,7 +64,8 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     model.MaximunFuelEnergy = Constraint(model.scenarios, model.yu_tup, model.generator_types,
                                                model.periods, rule=Maximun_Generator_Energy) # Maximun energy output of the diesel generator
     model.GeneratorMinStepCapacity = Constraint(model.yu_tup, model.generator_types, rule = Generator_Min_Step_Capacity)
-    
+    model.YearlyFuelLimit = Constraint(model.scenarios, model.years, model.generator_types, rule = Yearly_Fuel_Limit)
+        
     # Financial Constraints
     model.ScenarioNetPresentCost = Constraint(model.scenarios, rule=Scenario_Net_Present_Cost)    
     model.InitialInvestment = Constraint(rule=Investment_Cost)
