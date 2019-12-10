@@ -12,7 +12,7 @@ param: Delta_Time := 1.0;                                   # not change
 
 param: Battery_Investment_Cost := 0.54;                      # [USD/Wh]
 
-param: Battery_Electronic_Investment_Cost := 0.089488;      # Cost of the non-replaceable part of the battery bank [USD/Wh]
+param: Battery_Electronic_Investment_Cost := 0.27;         # Cost of the non-replaceable part of the battery bank [USD/Wh]
 
 param: Battery_Operation_Maintenance_Cost:= 0.02;           # O&M cost of the battery bank as a fraction of investment cost [%]
 
@@ -47,8 +47,8 @@ param: Renewable_Nominal_Capacity :=                        # Single unit capaci
 2   1000;                                                                                                
 
 param: Renewable_Inverter_Efficiency :=                     # Efficiency [%] of the inverter connected to each RES (put 1 in case of AC bus)
-1	 0.912
-2   0.96;
+1	0.912
+2   1;
 
 param: Renewable_Investment_Cost :=                         # Investment cost for each type of RES [USD/W]
 1  2
