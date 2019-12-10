@@ -36,7 +36,7 @@ param: Battery_Cycles := 5500;                              # [-]
 
 param: Battery_Initial_SOC := 1;                            # [%]
 
-param: Scenarios := 3;                                      # Number of scenarios to consider within the optimisation
+param: Scenarios := 1;                                      # Number of scenarios to consider within the optimisation
 
 param: Investment_Cost_Limit := 700000;                     # [USD]
 
@@ -44,11 +44,11 @@ param: Renewable_Sources := 2;                              # Number of RES type
 
 param: Renewable_Nominal_Capacity :=                        # Single unit capacity [W] of each type of RES
 1   1000
-2   30000;                                                                                                
+2   1000;                                                                                                
 
 param: Renewable_Inverter_Efficiency :=                     # Efficiency [%] of the inverter connected to each RES (put 1 in case of AC bus)
-1	 0.95
-2   1;
+1	 0.912
+2   0.96;
 
 param: Renewable_Investment_Cost :=                         # Investment cost for each type of RES [USD/W]
 1  2
@@ -69,8 +69,8 @@ param: Generator_Investment_Cost :=                         # Investment cost fo
 2  1.2;
 
 param: Generator_Operation_Maintenance_Cost :=              # O&M cost for each generator type as a fraction of investment cost [%]
-1	0.10
-2  0.45;                                                   
+1	0.045
+2  0.045;                                                   
 
 param: Generator_Lifetime :=
 1 20
@@ -82,17 +82,15 @@ param: Generator_Efficiency :=                              # Average generator 
 
 param: Lower_Heating_Value :=                               # Fuel LHV for each generator type [Wh/lt]
 1	9840
-2  8055;
+2  8.055;
 
 param: Fuel_Cost :=                                         # Fuel cost for each generator type [USD/lt]
 1  0.92
-2  0.55;
-
-param: Yearly_Fuel_Limit :=                                   # Yearly limit on fuel availability [lt]
-1  99999999999
-2  141250000;
+2  0.00055;
 
 param: Scenario_Weight :=                                   # Occurrence probability of each scenario [%]
-1  0.34
-2  0.33
-3  0.33;
+1  1;
+
+#param: Yearly_Fuel_Limit :=                                   # Yearly limit on fuel availability [lt]
+#1  99999999999
+#2  53892360;
