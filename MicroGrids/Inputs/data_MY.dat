@@ -36,7 +36,7 @@ param: Battery_Cycles := 5500;                              # [-]
 
 param: Battery_Initial_SOC := 1;                            # [%]
 
-param: Scenarios := 1;                                      # Number of scenarios to consider within the optimisation
+param: Scenarios := 3;                                      # Number of scenarios to consider within the optimisation
 
 param: Investment_Cost_Limit := 700000;                     # [USD]
 
@@ -69,7 +69,7 @@ param: Generator_Investment_Cost :=                         # Investment cost fo
 2  1.2;
 
 param: Generator_Operation_Maintenance_Cost :=              # O&M cost for each generator type as a fraction of investment cost [%]
-1	0.045
+1  0.045
 2  0.045;                                                   
 
 param: Generator_Lifetime :=
@@ -81,7 +81,7 @@ param: Generator_Efficiency :=                              # Average generator 
 2  0.30;                                                   
 
 param: Lower_Heating_Value :=                               # Fuel LHV for each generator type [Wh/lt]
-1	9840
+1  9840
 2  8.055;
 
 param: Fuel_Cost :=                                         # Fuel cost for each generator type [USD/lt]
@@ -89,7 +89,9 @@ param: Fuel_Cost :=                                         # Fuel cost for each
 2  0.00055;
 
 param: Scenario_Weight :=                                   # Occurrence probability of each scenario [%]
-1  1;
+1  0.34
+2  0.33
+3  0.33;
 
 #param: Yearly_Fuel_Limit :=                                   # Yearly limit on fuel availability [lt]
 #1  99999999999
