@@ -87,7 +87,6 @@ def Total_Fuel_Cost_NonAct(model,s,g):
 
 
 def Yearly_Fuel_Limit(model,s,y,g):
-
     return sum((model.Total_Generator_Energy[s,y,g]/(model.Lower_Heating_Value[g]*model.Generator_Efficiency[g])) for t in model.periods) <= model.Yearly_Fuel_Limit[g]
 
 
