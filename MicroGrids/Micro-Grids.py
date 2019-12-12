@@ -19,21 +19,31 @@ from Model_Creation_MY import Model_Creation
 from Model_Resolution_MY import Model_Resolution
    
     
-Optimization_Goal = 'Operation cost'  # Options: NPC / Operation cost. 
+Optimization_Goal = 'NPC'  # Options: NPC / Operation cost. 
                            # It allows to switch between a NPC-oriented optimization and a NON-ACTUALIZED Operation Cost-oriented optimization 
 
 Renewable_Penetration = 0  # a number from 0 to 1.
 Battery_Independency = 0   # number of days of battery independence
-Biogas_Generator = 2         # redundant! fix it
+Biogas_Generator = 2        
+
+f = open('Inputs/data_MY.dat','r')
+lines = f.readlines()
+lines[44] = "param: Biogas_Generator := %d;                               #don't change \n" %(Biogas_Generator)
+f.close()
+
+f = open('Inputs/data_MY.dat','w')
+f.writelines(lines)
+f.close()
+
 
 model = AbstractModel() # define type of optimization problem
 
 # Optimization model    
-Model_Creation(model, Renewable_Penetration, Battery_Independency) # Creation of the Sets, parameters and variables.
+Model_Creation(model, Renewable_Penetration, Battery_Independency, Biogas_Generator) # Creation of the Sets, parameters and variables.
 instance = Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency, Biogas_Generator) # Resolution of the instance
 
-# Upload the results from the instance and saving it in excel files
-Data = Load_Results(instance, Optimization_Goal) # Extract the results of energy from the instance and save it in a excel file 
+     # Upload the results from the instance and saving it in excel files
+Data = Load_Results(instance, Optimization_Goal) # Extract the  results of energy from the instance and save it in a excel file 
 NPC = Data[0]
 Scenarios =  Data[2]
 Scenario_Probability = Data[4]
@@ -47,7 +57,7 @@ SalvageValue = Data[9]
      
 # Energy Plot    
 S = 1 # Plot scenario
-Plot_Date = '01/03/2030 00:00:00' # Day-Month-Year ####ACTUALLY IT WILL INTERPRET A DATE PREFERABLY AS MONTH-DAY; IF DEVOID OF MEANING, IT WILL TRY DAY-MONTH
+Plot_Date = '01/03/2023 00:00:00' # Day-Month-Year ####ACTUALLY IT WILL INTERPRET A DATE PREFERABLY AS MONTH-DAY; IF DEVOID OF MEANING, IT WILL TRY DAY-MONTH
 PlotTime = 3# Days of the plot
 Time_Series = Integer_Time_Series(instance,Scenarios, S) 
    

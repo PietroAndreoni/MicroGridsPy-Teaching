@@ -127,7 +127,10 @@ def Investment_Cost(model):
     Inv_Bat = ((model.Battery_Nominal_Capacity[1]*model.Battery_Investment_Cost)
                     + sum((((model.Battery_Nominal_Capacity[ut] - model.Battery_Nominal_Capacity[ut-1])*model.Battery_Investment_Cost))/((1+model.Discount_Rate)**(yt-1))
                     for (yt,ut) in tup_list))
-    Inv_tank = (model.Tank_Capacity*model.Tank_Investment_Cost) 
+    if model.Biogas_Generator != 0:
+        Inv_tank = (model.Tank_Capacity*model.Tank_Investment_Cost) 
+    else: 
+        Inv_tank = 0
 
     return model.Investment_Cost == Inv_Ren + Inv_Gen + Inv_Bat + Inv_tank
 
@@ -206,7 +209,10 @@ def Operation_Maintenance_Cost_Act(model):
                     1+model.Discount_Rate)**yt)for (yt,ut) in model.yu_tup)for g in model.generator_types)
     OyM_Bat = sum((model.Battery_Nominal_Capacity[ut]*model.Battery_Investment_Cost*model.Battery_Operation_Maintenance_Cost)/((
                     1+model.Discount_Rate)**yt)for (yt,ut) in model.yu_tup)
-    OyM_Tank = sum((model.Tank_Capacity*model.Tank_Investment_Cost*model.Tank_Operation_Maintenance_Cost)/((1+model.Discount_Rate)**y)for y in model.years)
+    if model.Biogas_Generator != 0:
+        OyM_Tank = sum((model.Tank_Capacity*model.Tank_Investment_Cost*model.Tank_Operation_Maintenance_Cost)/((1+model.Discount_Rate)**y)for y in model.years)
+    else: 
+        OyM_Tank = 0
     return model.Operation_Maintenance_Cost_Act == OyM_Ren + OyM_Gen + OyM_Bat + OyM_Tank
 
 
@@ -217,7 +223,10 @@ def Operation_Maintenance_Cost_NonAct(model):
                     for (yt,ut) in model.yu_tup)for g in model.generator_types)
     OyM_Bat = sum((model.Battery_Nominal_Capacity[ut]*model.Battery_Investment_Cost*model.Battery_Operation_Maintenance_Cost)
                     for (yt,ut) in model.yu_tup)
-    OyM_Tank = sum( (model.Tank_Capacity*model.Tank_Investment_Cost*model.Tank_Operation_Maintenance_Cost) for y in model.years)
+    if model.Biogas_Generator != 0:
+        OyM_Tank = sum( (model.Tank_Capacity*model.Tank_Investment_Cost*model.Tank_Operation_Maintenance_Cost) for y in model.years)
+    else:
+        OyM_Tank = 0
     return model.Operation_Maintenance_Cost_NonAct == OyM_Ren + OyM_Gen + OyM_Bat + OyM_Tank
 
 
@@ -339,13 +348,15 @@ def Total_Variable_Cost_Act(model):
     return model.Total_Variable_Cost_Act == (sum(model.Total_Scenario_Variable_Cost_Act[s]*model.Scenario_Weight[s] for s in model.scenarios))
 
 def Tank_Balance(model,s,yt,t):
-    if t==1:
-        return model.State_Of_Charge_Tank[s,yt,t] == model.Tank_Initial_SOC*model.Tank_Capacity
+    if t==1 and yt==1:
+        return model.State_Of_Charge_Tank[s,yt,t] == model.Tank_Initial_SOC*model.Tank_Capacity + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t]
+    if t==1 and yt!=1:
+        return model.State_Of_Charge_Tank[s,yt,t] == model.State_Of_Charge_Tank[s,yt-1,model.Periods] + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t]    
     else:
         return model.State_Of_Charge_Tank[s,yt,t] == model.State_Of_Charge_Tank[s,yt,t-1] + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t]
 
 def Waste_Constraint(model,s,y,t):
-    return model.Waste_Flow_In[s,y,t] <= model.Waste_Supply[s,y,t]
+    return model.Waste_Flow_In[s,y,t] <= model.Waste_Supply[s,t]
 
 def Tank_Constraint(model,s,yt,t):
     return model.State_Of_Charge_Tank[s,yt,t] <= model.Tank_Capacity*model.Delta_Time

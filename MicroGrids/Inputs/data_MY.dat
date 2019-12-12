@@ -1,6 +1,6 @@
 param: Periods := 8760;                                     # periods considered in one year (8760h/y in the example)
 
-param: Years := 20;                                          # total duration of the project
+param: Years := 5;                                          # total duration of the project
 
 param: Step_Duration := 20;                                 # duration (in years) of each investment decision step in which the project lifetime will be split
 
@@ -42,6 +42,10 @@ param: Investment_Cost_Limit := 500000;                     # [USD]
 
 param: Renewable_Sources := 2;                              # Number of RES types
 
+param: Biogas_Generator := 2;                               #don't change 
+
+param: Generator_Types :=  2;                                # Number of different types of gensets 
+
 param: Renewable_Nominal_Capacity :=                        # Single unit capacity [W] of each type of RES
 1   1000
 2   1000;                                                                                                
@@ -57,16 +61,14 @@ param: Renewable_Investment_Cost :=                         # Investment cost fo
 param: Renewable_Lifetime :=                                # Component lifetime [y]
 1 20
 2 20;
- 
+  
 param: Renewable_Operation_Maintenance_Cost :=              # O&M cost for each type of RES as a fraction of investment cost [%]
 1  0.02                                                       
 2  0.02;                                                         
 
-param: Generator_Types := 2;                                # Number of different types of gensets 
-
 param: Generator_Investment_Cost :=                         # Investment cost for each generator type [USD/W]
 1  0.2
-2  0.3;
+2  0.25;
 
 param: Generator_Operation_Maintenance_Cost :=              # O&M cost for each generator type as a fraction of investment cost [%]
 1  0.045
@@ -86,17 +88,15 @@ param: Lower_Heating_Value :=                               # Fuel LHV for each 
 
 param: Fuel_Cost :=                                         # Fuel cost for each generator type [USD/lt]
 1  0.92
-2  0.00055;
+2  0.00055; 
 
 param: Scenario_Weight :=                                   # Occurrence probability of each scenario [%]
 1  1;
 
-param: Tank_Investment_Cost := 0.0001;                      # investment cost for the biodigestor/tank as a function of capacity [$/lt]
+param: Tank_Investment_Cost :=  0.16;                       # investment cost for the biodigestor/tank as a function of capacity [$/lt]
 
 param: Tank_Operation_Maintenance_Cost := 0.045;            # As a percentage of investment cost [%]
 
 param: Biodigestor_Efficiency := 0.18;                      # Liters of biofuel per chilogram of waste [lt/kg]
 
-param: Tank_Initial_SOC := 0;                               # initial gas present in the biodigestor   
-
-param: Biogas_Generator := 2;                               # 0 for none, n is the corrisponding generator number
+param: Tank_Initial_SOC := 1;                               # initial gas present in the biodigestor   

@@ -4,7 +4,7 @@ Based on the original model by Sergio Balderrama and Sylvain Quoilin
 Authors: Giulia Guidicini, Lorenzo Rinaldi - Politecnico di Milano
 """
 
-def Model_Creation(model, Renewable_Penetration,Battery_Independency):
+def Model_Creation(model, Renewable_Penetration,Battery_Independency, Biogas_Generator):
     
     '''
     This function creates the instance for the resolution of the optimization in Pyomo.
@@ -78,12 +78,13 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
                                            within=NonNegativeReals)   
 
     #Parameters of the biogas stock and flow chain
+    model.Biogas_Generator = Param()
     model.Tank_Investment_Cost = Param() # in $/lt
     model.Tank_Operation_Maintenance_Cost = Param()
     model.Biodigestor_Efficiency = Param() #in lt/kg waste
     model.Tank_Initial_SOC = Param()
     model.Waste_Supply = Param(model.scenarios, model.periods, initialize=Initialize_Waste)
-    model.Biogas_Generator = Param()
+
 
     # Parameters of the Energy balance                  
     model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 
@@ -136,10 +137,11 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
                                   within=NonNegativeReals)
                          
     #Variables of the biogas stock and flow chain
-    model.Waste_Flow_In = Var(model.scenarios, model.years,model.periods, within=NonNegativeReals)
-    model.Biogas_Flow_Out = Var(model.scenarios,model.years,model.periods, within=NonNegativeReals)
-    model.State_Of_Charge_Tank = Var(model.scenarios,model.years,model.periods, within=NonNegativeReals)
-    model.Tank_Capacity = Var(within=NonNegativeReals) #model.upgrades?
+    if Biogas_Generator != 0: 
+        model.Waste_Flow_In = Var(model.scenarios, model.years,model.periods, within=NonNegativeReals)
+        model.Biogas_Flow_Out = Var(model.scenarios,model.years,model.periods, within=NonNegativeReals)
+        model.State_Of_Charge_Tank = Var(model.scenarios,model.years,model.periods, within=NonNegativeReals)
+        model.Tank_Capacity = Var(within=NonNegativeReals) #model.upgrades?
 
     
     # Variables associated to the energy balance

@@ -66,10 +66,10 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     model.GeneratorMinStepCapacity = Constraint(model.yu_tup, model.generator_types, rule = Generator_Min_Step_Capacity)
 
     # Biogas Constraint
-    model.Tankbalance = Constraint(model.scenarios, model.years, model.periods, rule = Tank_Balance)
-    model.Tankconstraint = Constraint(model.scenarios,model.years,model.periods, rule = Tank_Constraint)
-    model.Wasteconstraint = Constraint(model.scenarios,model.years,model.periods, rule = Waste_Constraint)
     if Biogas_Generator != 0:
+        model.Tankbalance = Constraint(model.scenarios, model.years, model.periods, rule = Tank_Balance)
+        model.Tankconstraint = Constraint(model.scenarios,model.years,model.periods, rule = Tank_Constraint)
+        model.Wasteconstraint = Constraint(model.scenarios,model.years,model.periods, rule = Waste_Constraint)
         model.Biogasenergygen = Constraint(model.scenarios,model.years,model.generator_types,model.periods, rule = Biogas_energy_generation)
           
     # Financial Constraints
@@ -94,6 +94,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     print('Model_Resolution: Constraints imported')
     
     instance = model.create_instance(datapath) # load parameters
+#    instance.Generator_Nominal_Capacity[1,2].fix(14849.89165) #for calibration only
 
     print('Model_Resolution: Instance created')
     

@@ -27,7 +27,8 @@ def Load_Results(instance, Optimization_Goal):
     Number_Upgrades = int(instance.Upgrades_Number.extract_values()[None])
     Number_Renewable_Sources = int(instance.Renewable_Sources.extract_values()[None])
     Number_Generators = int(instance.Generator_Types.extract_values()[None])
-
+    Biogas_Gen = int(instance.Biogas_Generator.extract_values()[None])
+    
     upgrades = [i for i in range(1, Number_Upgrades+1)]
     
     upgrade_years_list = [1 for i in range(1, Number_Upgrades+1)]
@@ -51,8 +52,10 @@ def Load_Results(instance, Optimization_Goal):
     Battery_Flow_in = instance.Energy_Battery_Flow_In.get_values()
     Curtailment = instance.Energy_Curtailment.get_values()
     SOC = instance.State_Of_Charge_Battery.get_values()
-    SOC_Tank = instance.State_Of_Charge_Tank.get_values()
-    Flow_in = instance.Waste_Flow_In.get_values()
+    if Biogas_Gen != 0:
+        Flow_in = instance.Waste_Flow_In.get_values()    
+        SOC_Tank = instance.State_Of_Charge_Tank.get_values()
+
     Generator_Energy = instance.Total_Generator_Energy.get_values()
 
     Energy_Demand = instance.Energy_Demand.extract_values()    
@@ -104,61 +107,95 @@ def Load_Results(instance, Optimization_Goal):
     for r in range(0,Number_Renewable_Sources ):
         for t in range(0, Number_Periods):
             Scenarios_Ren[r].append((r+1,t+1))
-       
-    Scenarios = pd.DataFrame()
-    foo=0         
-    for i in columns:
-        Information = [[] for i in range(0,11)]
-        for j in  Scenarios_Periods[foo]:
-            Information[0].append(Lost_Load[j])
-            Information[1].append(Battery_Flow_Out[j]) 
-            Information[2].append(Battery_Flow_in[j]) 
-            Information[3].append(Curtailment[j]) 
-            Information[4].append(Energy_Demand[j]) 
-            Information[5].append(SOC[j])
-            Information[6].append(Total_Generator_Energy[j])
-            Information[7].append(Total_Fuel[j])
-            Information[8].append(Renewable_Energy[j])   
-            Information[9].append(SOC_Tank[j])
-            Information[10].append(Flow_in[j])
-        Scenarios=Scenarios.append(Information)
-            
-        for k in range(0,Number_Renewable_Sources):
-            Information_2 = [[] for i in range(0,Number_Renewable_Sources)]
-            for y in range(0, Number_Years):
-                for t in range(0,Number_Periods):
-                    for r in range(0,Number_Renewable_Sources):
-                        Information_2[r].append(Renewable_Energy_1[(foo+1,y+1,r+1,t+1)]) 
-        Scenarios=Scenarios.append(Information_2)        
-
-        for k in range(0,Number_Generators):
-            Information_3 = [[] for i in range(0,Number_Generators)]
-            for y in range(0, Number_Years):
-                for t in range(0,Number_Periods):
-                    for g in range(0,Number_Generators):
-                        Information_3[g].append(Generator_Energy[(foo+1,y+1,g+1,t+1)]) 
-        Scenarios=Scenarios.append(Information_3)        
-
-        foo+=1
     
+    if Biogas_Gen != 0:
+        Scenarios = pd.DataFrame()
+        foo=0         
+        for i in columns:
+            Information = [[] for i in range(0,11)]
+            for j in  Scenarios_Periods[foo]:
+                Information[0].append(Lost_Load[j])
+                Information[1].append(Battery_Flow_Out[j]) 
+                Information[2].append(Battery_Flow_in[j]) 
+                Information[3].append(Curtailment[j]) 
+                Information[4].append(Energy_Demand[j]) 
+                Information[5].append(SOC[j])
+                Information[6].append(Total_Generator_Energy[j])
+                Information[7].append(Total_Fuel[j])
+                Information[8].append(Renewable_Energy[j])   
+                Information[9].append(SOC_Tank[j])
+                Information[10].append(Flow_in[j])
+            Scenarios=Scenarios.append(Information)
+    else:      
+        Scenarios = pd.DataFrame()
+        foo=0         
+        for i in columns:
+            Information = [[] for i in range(0,9)]
+            for j in  Scenarios_Periods[foo]:
+                Information[0].append(Lost_Load[j])
+                Information[1].append(Battery_Flow_Out[j]) 
+                Information[2].append(Battery_Flow_in[j]) 
+                Information[3].append(Curtailment[j]) 
+                Information[4].append(Energy_Demand[j]) 
+                Information[5].append(SOC[j])
+                Information[6].append(Total_Generator_Energy[j])
+                Information[7].append(Total_Fuel[j])
+                Information[8].append(Renewable_Energy[j])   
+            Scenarios=Scenarios.append(Information)
+        
+        
+    for k in range(0,Number_Renewable_Sources):
+        Information_2 = [[] for i in range(0,Number_Renewable_Sources)]
+        for y in range(0, Number_Years):
+            for t in range(0,Number_Periods):
+                for r in range(0,Number_Renewable_Sources):
+                    Information_2[r].append(Renewable_Energy_1[(foo+1,y+1,r+1,t+1)]) 
+    Scenarios=Scenarios.append(Information_2)        
+
+    for k in range(0,Number_Generators):
+        Information_3 = [[] for i in range(0,Number_Generators)]
+        for y in range(0, Number_Years):
+            for t in range(0,Number_Periods):
+                for g in range(0,Number_Generators):
+                    Information_3[g].append(Generator_Energy[(foo+1,y+1,g+1,t+1)]) 
+    Scenarios=Scenarios.append(Information_3)        
+
+    foo+=1
     index=[]  
-    for j in range(1, Number_Scenarios+1):   
-       index.append('Lost_Load '+str(j))
-       index.append('Battery_Flow_Out '+str(j)) 
-       index.append('Battery_Flow_in '+str(j))
-       index.append('Curtailment '+str(j))
-       index.append('Energy_Demand '+str(j))
-       index.append('SOC '+str(j))
-       index.append('Gen energy '+str(j))
-       index.append('Fuel '+str(j)+' [Lt]')
-       index.append('Total Renewable Energy '+str(j))
-       index.append('Tank SOC '+str(j))
-       index.append('biodigestor inlet '+str(j))
-       for r in range(1,Number_Renewable_Sources+1):
-           index.append('Renewable Energy: s='+str(j)+' r='+str(r))
-       for g in range(1,Number_Generators+1):
-           index.append('Generator: s='+str(j)+' g='+str(g))
-          
+    if Biogas_Gen != 0:    
+        for j in range(1, Number_Scenarios+1):   
+           index.append('Lost_Load '+str(j))
+           index.append('Battery_Flow_Out '+str(j)) 
+           index.append('Battery_Flow_in '+str(j))
+           index.append('Curtailment '+str(j))
+           index.append('Energy_Demand '+str(j))
+           index.append('SOC '+str(j))
+           index.append('Gen energy '+str(j))
+           index.append('Fuel '+str(j)+' [Lt]')
+           index.append('Total Renewable Energy '+str(j))
+           index.append('Tank SOC '+str(j))
+           index.append('biodigestor inlet '+str(j))
+           for r in range(1,Number_Renewable_Sources+1):
+               index.append('Renewable Energy: s='+str(j)+' r='+str(r))
+           for g in range(1,Number_Generators+1):
+               index.append('Generator: s='+str(j)+' g='+str(g))
+    else:
+        index=[]  
+        for j in range(1, Number_Scenarios+1):   
+           index.append('Lost_Load '+str(j))
+           index.append('Battery_Flow_Out '+str(j)) 
+           index.append('Battery_Flow_in '+str(j))
+           index.append('Curtailment '+str(j))
+           index.append('Energy_Demand '+str(j))
+           index.append('SOC '+str(j))
+           index.append('Gen energy '+str(j))
+           index.append('Fuel '+str(j)+' [Lt]')
+           index.append('Total Renewable Energy '+str(j))
+           for r in range(1,Number_Renewable_Sources+1):
+               index.append('Renewable Energy: s='+str(j)+' r='+str(r))
+           for g in range(1,Number_Generators+1):
+               index.append('Generator: s='+str(j)+' g='+str(g))
+        
     Scenarios.index = index
     Scenarios_2 = Scenarios.transpose() 
     
