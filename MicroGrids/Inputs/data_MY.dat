@@ -36,9 +36,9 @@ param: Battery_Cycles := 5500;                              # [-]
 
 param: Battery_Initial_SOC := 1;                            # [%]
 
-param: Scenarios := 3;                                      # Number of scenarios to consider within the optimisation
+param: Scenarios := 1;                                      # Number of scenarios to consider within the optimisation
 
-param: Investment_Cost_Limit := 700000;                     # [USD]
+param: Investment_Cost_Limit := 500000;                     # [USD]
 
 param: Renewable_Sources := 2;                              # Number of RES types
 
@@ -66,7 +66,7 @@ param: Generator_Types := 2;                                # Number of differen
 
 param: Generator_Investment_Cost :=                         # Investment cost for each generator type [USD/W]
 1  0.2
-2  1.2;
+2  0.3;
 
 param: Generator_Operation_Maintenance_Cost :=              # O&M cost for each generator type as a fraction of investment cost [%]
 1  0.045
@@ -89,10 +89,14 @@ param: Fuel_Cost :=                                         # Fuel cost for each
 2  0.00055;
 
 param: Scenario_Weight :=                                   # Occurrence probability of each scenario [%]
-1  0.34
-2  0.33
-3  0.33;
+1  1;
 
-#param: Yearly_Fuel_Limit :=                                   # Yearly limit on fuel availability [lt]
-#1  99999999999
-#2  53892360;
+param: Tank_Investment_Cost := 0.0001;                      # investment cost for the biodigestor/tank as a function of capacity [$/lt]
+
+param: Tank_Operation_Maintenance_Cost := 0.045;            # As a percentage of investment cost [%]
+
+param: Biodigestor_Efficiency := 0.18;                      # Liters of biofuel per chilogram of waste [lt/kg]
+
+param: Tank_Initial_SOC := 0;                               # initial gas present in the biodigestor   
+
+param: Biogas_Generator := 2;                               # 0 for none, n is the corrisponding generator number

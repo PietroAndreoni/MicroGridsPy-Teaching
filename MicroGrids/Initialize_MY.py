@@ -83,7 +83,12 @@ def Initialize_Renewable_Energy(model,s,r,t):
     '''
     column = (s-1)*model.Renewable_Sources + r 
     return float(Renewable_Energy[column][t])   
-    
+
+Waste_Supply = pd.read_excel('Inputs/Waste_Supply.xls')
+
+def Initialize_Waste(model,s,t):
+
+    return float(Waste_Supply[s][t])
     
 def Initialize_Upgrades_Number(model):
     '''

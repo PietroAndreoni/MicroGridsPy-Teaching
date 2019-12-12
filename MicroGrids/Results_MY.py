@@ -52,6 +52,7 @@ def Load_Results(instance, Optimization_Goal):
     Curtailment = instance.Energy_Curtailment.get_values()
     SOC = instance.State_Of_Charge_Battery.get_values()
     Generator_Energy = instance.Total_Generator_Energy.get_values()
+    SOC_Tank = instance.State_Of_Charge_Tank.get_values()
 
     Energy_Demand = instance.Energy_Demand.extract_values()    
     Scenario_Weight = instance.Scenario_Weight.extract_values()

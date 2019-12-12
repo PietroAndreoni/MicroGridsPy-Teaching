@@ -13,7 +13,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
     
     '''
     from pyomo.environ import Param, RangeSet, NonNegativeReals, Var, Set 
-    from Initialize_MY import Initialize_Demand, Unitary_Battery_Replacement_Cost, Initialize_Renewable_Energy, Generator_Marginal_Cost, Min_Bat_Capacity, Initialize_YearUpgrade_Tuples, Initialize_Upgrades_Number # Import library with initialitation funtions for the parameters
+    from Initialize_MY import Initialize_Demand, Initialize_Waste, Unitary_Battery_Replacement_Cost, Initialize_Renewable_Energy, Generator_Marginal_Cost, Min_Bat_Capacity, Initialize_YearUpgrade_Tuples, Initialize_Upgrades_Number # Import library with initialitation funtions for the parameters
 
     # Time parameters
     model.Periods = Param(within=NonNegativeReals) # Number of periods of analysis of the energy variables
@@ -76,8 +76,15 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
                                             initialize=Generator_Marginal_Cost)   
     model.Generator_Lifetime = Param(model.generator_types,
                                            within=NonNegativeReals)   
-#    model.Yearly_Fuel_Limit = Param(model.generator_types, within=NonNegativeReals)  #Yearly limit on fuel availability in liters
- 
+
+    #Parameters of the biogas stock and flow chain
+    model.Tank_Investment_Cost = Param() # in $/lt
+    model.Tank_Operation_Maintenance_Cost = Param()
+    model.Biodigestor_Efficiency = Param() #in lt/kg waste
+    model.Tank_Initial_SOC = Param()
+    model.Waste_Supply = Param(model.scenarios, model.periods, initialize=Initialize_Waste)
+    model.Biogas_Generator = Param()
+
     # Parameters of the Energy balance                  
     model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 
                                 initialize=Initialize_Demand) # Energy Energy_Demand in W 
@@ -127,7 +134,13 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency):
                                   within=NonNegativeReals)
     model.Total_Fuel_Cost_NonAct = Var(model.scenarios, model.generator_types,
                                   within=NonNegativeReals)
-    
+                         
+    #Variables of the biogas stock and flow chain
+    model.Waste_Flow_In = Var(model.scenarios, model.years,model.periods, within=NonNegativeReals)
+    model.Biogas_Flow_Out = Var(model.scenarios,model.years,model.periods, within=NonNegativeReals)
+    model.State_Of_Charge_Tank = Var(model.scenarios,model.years,model.periods, within=NonNegativeReals)
+    model.Tank_Capacity = Var(within=NonNegativeReals) #model.upgrades?
+
     
     # Variables associated to the energy balance
     model.Lost_Load = Var(model.scenarios, model.years, model.periods, within=NonNegativeReals) # Energy not supplied by the system kWh

@@ -24,12 +24,13 @@ Optimization_Goal = 'Operation cost'  # Options: NPC / Operation cost.
 
 Renewable_Penetration = 0  # a number from 0 to 1.
 Battery_Independency = 0   # number of days of battery independence
+Biogas_Generator = 2         # redundant! fix it
 
 model = AbstractModel() # define type of optimization problem
 
 # Optimization model    
 Model_Creation(model, Renewable_Penetration, Battery_Independency) # Creation of the Sets, parameters and variables.
-instance = Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency) # Resolution of the instance
+instance = Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency, Biogas_Generator) # Resolution of the instance
 
 # Upload the results from the instance and saving it in excel files
 Data = Load_Results(instance, Optimization_Goal) # Extract the results of energy from the instance and save it in a excel file 
