@@ -51,8 +51,9 @@ def Load_Results(instance, Optimization_Goal):
     Battery_Flow_in = instance.Energy_Battery_Flow_In.get_values()
     Curtailment = instance.Energy_Curtailment.get_values()
     SOC = instance.State_Of_Charge_Battery.get_values()
-    Generator_Energy = instance.Total_Generator_Energy.get_values()
     SOC_Tank = instance.State_Of_Charge_Tank.get_values()
+    Flow_in = instance.Waste_Flow_In.get_values()
+    Generator_Energy = instance.Total_Generator_Energy.get_values()
 
     Energy_Demand = instance.Energy_Demand.extract_values()    
     Scenario_Weight = instance.Scenario_Weight.extract_values()
@@ -64,7 +65,8 @@ def Load_Results(instance, Optimization_Goal):
     print('Number of years = '+str(Number_Years)+'\n')
 
 
-#################################### TIME SERIES ####################################
+#################################### TIME SERIES ####################################   
+    
 
     columns = []
     for i in range(1, Number_Scenarios+1):
@@ -106,7 +108,7 @@ def Load_Results(instance, Optimization_Goal):
     Scenarios = pd.DataFrame()
     foo=0         
     for i in columns:
-        Information = [[] for i in range(0,9)]
+        Information = [[] for i in range(0,11)]
         for j in  Scenarios_Periods[foo]:
             Information[0].append(Lost_Load[j])
             Information[1].append(Battery_Flow_Out[j]) 
@@ -116,7 +118,9 @@ def Load_Results(instance, Optimization_Goal):
             Information[5].append(SOC[j])
             Information[6].append(Total_Generator_Energy[j])
             Information[7].append(Total_Fuel[j])
-            Information[8].append(Renewable_Energy[j])        
+            Information[8].append(Renewable_Energy[j])   
+            Information[9].append(SOC_Tank[j])
+            Information[10].append(Flow_in[j])
         Scenarios=Scenarios.append(Information)
             
         for k in range(0,Number_Renewable_Sources):
@@ -148,6 +152,8 @@ def Load_Results(instance, Optimization_Goal):
        index.append('Gen energy '+str(j))
        index.append('Fuel '+str(j)+' [Lt]')
        index.append('Total Renewable Energy '+str(j))
+       index.append('Tank SOC '+str(j))
+       index.append('biodigestor inlet '+str(j))
        for r in range(1,Number_Renewable_Sources+1):
            index.append('Renewable Energy: s='+str(j)+' r='+str(r))
        for g in range(1,Number_Generators+1):

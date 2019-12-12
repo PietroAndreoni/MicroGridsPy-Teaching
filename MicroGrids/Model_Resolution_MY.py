@@ -18,7 +18,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     :return: The solution inside an object call instance.
     '''
     from Constraints_MY import  Renewable_Energy,State_of_Charge,Biogas_energy_generation,Tank_Constraint,Tank_Balance,\
-    Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out,\
+    Maximun_Charge, Minimun_Charge, Max_Power_Battery_Charge, Max_Power_Battery_Discharge, Max_Bat_in, Max_Bat_out, Waste_Constraint,\
     Energy_balance, Maximun_Lost_Load,Scenario_Net_Present_Cost, Scenario_Lost_Load_Cost_Act, Scenario_Lost_Load_Cost_NonAct, Renewable_Energy_Penetration,\
     Investment_Cost, Operation_Maintenance_Cost_Act, Operation_Maintenance_Cost_NonAct, Battery_Replacement_Cost_Act, Battery_Replacement_Cost_NonAct, Maximun_Generator_Energy, Total_Fuel_Cost_Act, Total_Fuel_Cost_NonAct,\
     Battery_Min_Capacity, Battery_Min_Step_Capacity, Renewables_Min_Step_Units, Generator_Min_Step_Capacity, Salvage_Value, Net_Present_Cost_Obj,Total_Variable_Cost_Act, Scenario_Variable_Cost_Act, Scenario_Variable_Cost_NonAct,Total_Variable_Cost_Obj, Net_Present_Cost, Investment_Cost_Limit
@@ -68,6 +68,7 @@ def Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_In
     # Biogas Constraint
     model.Tankbalance = Constraint(model.scenarios, model.years, model.periods, rule = Tank_Balance)
     model.Tankconstraint = Constraint(model.scenarios,model.years,model.periods, rule = Tank_Constraint)
+    model.Wasteconstraint = Constraint(model.scenarios,model.years,model.periods, rule = Waste_Constraint)
     if Biogas_Generator != 0:
         model.Biogasenergygen = Constraint(model.scenarios,model.years,model.generator_types,model.periods, rule = Biogas_energy_generation)
           

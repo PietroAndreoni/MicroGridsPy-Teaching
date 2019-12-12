@@ -340,9 +340,12 @@ def Total_Variable_Cost_Act(model):
 
 def Tank_Balance(model,s,yt,t):
     if t==1:
-        return model.State_Of_Charge_Tank[s,yt,t] == model.Tank_Initial_SOC
+        return model.State_Of_Charge_Tank[s,yt,t] == model.Tank_Initial_SOC*model.Tank_Capacity
     else:
         return model.State_Of_Charge_Tank[s,yt,t] == model.State_Of_Charge_Tank[s,yt,t-1] + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t]
+
+def Waste_Constraint(model,s,y,t):
+    return model.Waste_Flow_In[s,y,t] <= model.Waste_Supply[s,y,t]
 
 def Tank_Constraint(model,s,yt,t):
     return model.State_Of_Charge_Tank[s,yt,t] <= model.Tank_Capacity*model.Delta_Time
