@@ -84,7 +84,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency, Biogas_Gen
     model.Biodigestor_Efficiency = Param() #in lt/kg waste
     model.Tank_Initial_SOC = Param()
     model.Waste_Supply = Param(model.scenarios, model.periods, initialize=Initialize_Waste)
-
+    model.Cooking_Yearly_Demand = Param()
 
     # Parameters of the Energy balance                  
     model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 

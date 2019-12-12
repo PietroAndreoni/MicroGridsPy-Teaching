@@ -24,15 +24,18 @@ Optimization_Goal = 'Operation cost'  # Options: NPC / Operation cost.
 
 Renewable_Penetration = 0  # a number from 0 to 1.
 Battery_Independency = 0   # number of days of battery independence
-Biogas_Generator = 2        
+Biogas_Generator = 2       # 0 for no biogas, n is the biogas generator corrisponding index 
+Cooking_Demand = 1         # cooking demand in m^3/yr     
 
-#writing former parameter into data_MY.dat to be read in model
+#writing former parameters into data_MY.dat to be read in model
 f = open('Inputs/data_MY.dat','r')
 lines = f.readlines()
 lines[44] = "param: Biogas_Generator := %d;                               #don't change \n" %(Biogas_Generator)
-
+lines[48] = "param: Yearly_Cooking_Demand := %d;                          #yearly cooking demand in m^3 \n" %(Cooking_Demand)
 if Biogas_Generator == 1:
-    lines[70] = "2  1.2;\n"
+    lines[72] = "2  1.2;\n"
+
+
 f.close()
 
 f = open('Inputs/data_MY.dat','w')
@@ -60,8 +63,8 @@ TotInvCost = Data[8]
 SalvageValue = Data[9]
      
 # Energy Plot    
-S = 3 # Plot scenario
-Plot_Date = '01/03/2030 00:00:00' # Day-Month-Year ####ACTUALLY IT WILL INTERPRET A DATE PREFERABLY AS MONTH-DAY; IF DEVOID OF MEANING, IT WILL TRY DAY-MONTH
+S = 1 # Plot scenario
+Plot_Date = '01/03/2023 00:00:00' # Day-Month-Year ####ACTUALLY IT WILL INTERPRET A DATE PREFERABLY AS MONTH-DAY; IF DEVOID OF MEANING, IT WILL TRY DAY-MONTH
 PlotTime = 3# Days of the plot
 Time_Series = Integer_Time_Series(instance,Scenarios, S) 
    

@@ -349,20 +349,20 @@ def Total_Variable_Cost_Act(model):
 
 def Tank_Balance(model,s,yt,t):
     if t==1 and yt==1:
-        return model.State_Of_Charge_Tank[s,yt,t] == model.Tank_Initial_SOC*model.Tank_Capacity + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t]
+        return model.State_Of_Charge_Tank[s,yt,t] == model.Tank_Initial_SOC*model.Tank_Capacity + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t] - model.Cooking_Yearly_Demand/8760
     if t==1 and yt!=1:
-        return model.State_Of_Charge_Tank[s,yt,t] == model.State_Of_Charge_Tank[s,yt-1,model.Periods] + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t]    
+        return model.State_Of_Charge_Tank[s,yt,t] == model.State_Of_Charge_Tank[s,yt-1,model.Periods] + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t] - model.Cooking_Yearly_Demand/8760   
     else:
-        return model.State_Of_Charge_Tank[s,yt,t] == model.State_Of_Charge_Tank[s,yt,t-1] + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t]
+        return model.State_Of_Charge_Tank[s,yt,t] == model.State_Of_Charge_Tank[s,yt,t-1] + model.Biodigestor_Efficiency*model.Waste_Flow_In[s,yt,t] - model.Biogas_Flow_Out[s,yt,t] - model.Cooking_Yearly_Demand/8760
 
 def Waste_Constraint(model,s,y,t):
     return model.Waste_Flow_In[s,y,t] <= model.Waste_Supply[s,t]
 
 def Tank_Constraint(model,s,yt,t):
-    return model.State_Of_Charge_Tank[s,yt,t] <= model.Tank_Capacity*model.Delta_Time
+    return model.State_Of_Charge_Tank[s,yt,t] <= model.Tank_Capacity*2.5*model.Delta_Time
 
 def Biogas_energy_generation(model,s,yt,g,t):
     if g == model.Biogas_Generator:
-        return model.Total_Generator_Energy[s,yt,g,t] == model.Biogas_Flow_Out[s,yt,t]*model.Lower_Heating_Value[g]*model.Generator_Efficiency[g]
+        return model.Total_Generator_Energy[s,yt,g,t] == 1000*model.Biogas_Flow_Out[s,yt,t]*model.Lower_Heating_Value[g]*model.Generator_Efficiency[g]
     else:
-        return model.Total_Generator_Energy[s,yt,g,t] >= 0 #OOOOOCCHIO!!!!! da fixare quando hai tempo!!!!
+        return model.Total_Generator_Energy[s,yt,g,t] >= 0 
