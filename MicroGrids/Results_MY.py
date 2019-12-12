@@ -126,6 +126,24 @@ def Load_Results(instance, Optimization_Goal):
                 Information[9].append(SOC_Tank[j])
                 Information[10].append(Flow_in[j])
             Scenarios=Scenarios.append(Information)
+            
+            
+            for k in range(0,Number_Renewable_Sources):
+                Information_2 = [[] for i in range(0,Number_Renewable_Sources)]
+                for y in range(0, Number_Years):
+                    for t in range(0,Number_Periods):
+                        for r in range(0,Number_Renewable_Sources):
+                            Information_2[r].append(Renewable_Energy_1[(foo+1,y+1,r+1,t+1)]) 
+            Scenarios=Scenarios.append(Information_2)        
+        
+            for k in range(0,Number_Generators):
+                Information_3 = [[] for i in range(0,Number_Generators)]
+                for y in range(0, Number_Years):
+                    for t in range(0,Number_Periods):
+                        for g in range(0,Number_Generators):
+                            Information_3[g].append(Generator_Energy[(foo+1,y+1,g+1,t+1)]) 
+            Scenarios=Scenarios.append(Information_3)        
+
     else:      
         Scenarios = pd.DataFrame()
         foo=0         
@@ -142,23 +160,22 @@ def Load_Results(instance, Optimization_Goal):
                 Information[7].append(Total_Fuel[j])
                 Information[8].append(Renewable_Energy[j])   
             Scenarios=Scenarios.append(Information)
+                
+            for k in range(0,Number_Renewable_Sources):
+                Information_2 = [[] for i in range(0,Number_Renewable_Sources)]
+                for y in range(0, Number_Years):
+                    for t in range(0,Number_Periods):
+                        for r in range(0,Number_Renewable_Sources):
+                            Information_2[r].append(Renewable_Energy_1[(foo+1,y+1,r+1,t+1)]) 
+            Scenarios=Scenarios.append(Information_2)        
         
-        
-    for k in range(0,Number_Renewable_Sources):
-        Information_2 = [[] for i in range(0,Number_Renewable_Sources)]
-        for y in range(0, Number_Years):
-            for t in range(0,Number_Periods):
-                for r in range(0,Number_Renewable_Sources):
-                    Information_2[r].append(Renewable_Energy_1[(foo+1,y+1,r+1,t+1)]) 
-    Scenarios=Scenarios.append(Information_2)        
-
-    for k in range(0,Number_Generators):
-        Information_3 = [[] for i in range(0,Number_Generators)]
-        for y in range(0, Number_Years):
-            for t in range(0,Number_Periods):
-                for g in range(0,Number_Generators):
-                    Information_3[g].append(Generator_Energy[(foo+1,y+1,g+1,t+1)]) 
-    Scenarios=Scenarios.append(Information_3)        
+            for k in range(0,Number_Generators):
+                Information_3 = [[] for i in range(0,Number_Generators)]
+                for y in range(0, Number_Years):
+                    for t in range(0,Number_Periods):
+                        for g in range(0,Number_Generators):
+                            Information_3[g].append(Generator_Energy[(foo+1,y+1,g+1,t+1)]) 
+            Scenarios=Scenarios.append(Information_3)        
 
     foo+=1
     index=[]  

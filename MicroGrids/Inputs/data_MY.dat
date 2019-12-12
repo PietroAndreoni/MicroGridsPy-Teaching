@@ -1,6 +1,6 @@
 param: Periods := 8760;                                     # periods considered in one year (8760h/y in the example)
 
-param: Years := 5;                                          # total duration of the project
+param: Years := 20;                                          # total duration of the project
 
 param: Step_Duration := 20;                                 # duration (in years) of each investment decision step in which the project lifetime will be split
 
@@ -36,9 +36,9 @@ param: Battery_Cycles := 5500;                              # [-]
 
 param: Battery_Initial_SOC := 1;                            # [%]
 
-param: Scenarios := 1;                                      # Number of scenarios to consider within the optimisation
+param: Scenarios := 3;                                      # Number of scenarios to consider within the optimisation
 
-param: Investment_Cost_Limit := 500000;                     # [USD]
+param: Investment_Cost_Limit := 600000;                     # [USD]
 
 param: Renewable_Sources := 2;                              # Number of RES types
 
@@ -48,7 +48,7 @@ param: Generator_Types :=  2;                                # Number of differe
 
 param: Renewable_Nominal_Capacity :=                        # Single unit capacity [W] of each type of RES
 1   1000
-2   1000;                                                                                                
+2   10000;                                                                                                
 
 param: Renewable_Inverter_Efficiency :=                     # Efficiency [%] of the inverter connected to each RES (put 1 in case of AC bus)
 1	0.912
@@ -91,7 +91,9 @@ param: Fuel_Cost :=                                         # Fuel cost for each
 2  0.00055; 
 
 param: Scenario_Weight :=                                   # Occurrence probability of each scenario [%]
-1  1;
+1  0.34
+2  0.33
+3  0.33;
 
 param: Tank_Investment_Cost :=  0.16;                       # investment cost for the biodigestor/tank as a function of capacity [$/lt]
 

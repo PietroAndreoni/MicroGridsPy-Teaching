@@ -19,25 +19,29 @@ from Model_Creation_MY import Model_Creation
 from Model_Resolution_MY import Model_Resolution
    
     
-Optimization_Goal = 'NPC'  # Options: NPC / Operation cost. 
+Optimization_Goal = 'Operation cost'  # Options: NPC / Operation cost. 
                            # It allows to switch between a NPC-oriented optimization and a NON-ACTUALIZED Operation Cost-oriented optimization 
 
 Renewable_Penetration = 0  # a number from 0 to 1.
 Battery_Independency = 0   # number of days of battery independence
 Biogas_Generator = 2        
 
+#writing former parameter into data_MY.dat to be read in model
 f = open('Inputs/data_MY.dat','r')
 lines = f.readlines()
 lines[44] = "param: Biogas_Generator := %d;                               #don't change \n" %(Biogas_Generator)
+
+if Biogas_Generator == 1:
+    lines[70] = "2  1.2;\n"
 f.close()
 
 f = open('Inputs/data_MY.dat','w')
 f.writelines(lines)
 f.close()
-
+ 
 
 model = AbstractModel() # define type of optimization problem
-
+   
 # Optimization model    
 Model_Creation(model, Renewable_Penetration, Battery_Independency, Biogas_Generator) # Creation of the Sets, parameters and variables.
 instance = Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency, Biogas_Generator) # Resolution of the instance
@@ -56,8 +60,8 @@ TotInvCost = Data[8]
 SalvageValue = Data[9]
      
 # Energy Plot    
-S = 1 # Plot scenario
-Plot_Date = '01/03/2023 00:00:00' # Day-Month-Year ####ACTUALLY IT WILL INTERPRET A DATE PREFERABLY AS MONTH-DAY; IF DEVOID OF MEANING, IT WILL TRY DAY-MONTH
+S = 3 # Plot scenario
+Plot_Date = '01/03/2030 00:00:00' # Day-Month-Year ####ACTUALLY IT WILL INTERPRET A DATE PREFERABLY AS MONTH-DAY; IF DEVOID OF MEANING, IT WILL TRY DAY-MONTH
 PlotTime = 3# Days of the plot
 Time_Series = Integer_Time_Series(instance,Scenarios, S) 
    
@@ -67,3 +71,5 @@ Plot_Energy_Total(instance, Time_Series, plot, Plot_Date, PlotTime)
 # Data Analisys    
 Energy_Mix_S = Energy_Mix(instance,Scenarios,Scenario_Probability)
 Print_Results(LCOE, NPC, TotVarCost, TotInvCost, SalvageValue, Optimization_Goal)  
+
+#tank capacity = 414,4 lt
