@@ -13,7 +13,7 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency, Biogas_Gen
     
     '''
     from pyomo.environ import Param, RangeSet, NonNegativeReals, Var, Set 
-    from Initialize_MY import Initialize_Demand, Initialize_Waste, Unitary_Battery_Replacement_Cost, Initialize_Renewable_Energy, Generator_Marginal_Cost, Min_Bat_Capacity, Initialize_YearUpgrade_Tuples, Initialize_Upgrades_Number # Import library with initialitation funtions for the parameters
+    from Initialize_MY import Initialize_Demand, Initialize_Waste, Initialize_Cooking, Unitary_Battery_Replacement_Cost, Initialize_Renewable_Energy, Generator_Marginal_Cost, Min_Bat_Capacity, Initialize_YearUpgrade_Tuples, Initialize_Upgrades_Number # Import library with initialitation funtions for the parameters
 
     # Time parameters
     model.Periods = Param(within=NonNegativeReals) # Number of periods of analysis of the energy variables
@@ -84,7 +84,8 @@ def Model_Creation(model, Renewable_Penetration,Battery_Independency, Biogas_Gen
     model.Biodigestor_Efficiency = Param() #in lt/kg waste
     model.Tank_Initial_SOC = Param()
     model.Waste_Supply = Param(model.scenarios, model.periods, initialize=Initialize_Waste)
-    model.Cooking_Yearly_Demand = Param()
+    model.Yearly_Cooking_Demand = Param(model.scenarios, model.years, initialize=Initialize_Cooking)
+    model.Tank_Nominal_Pressure = Param()
 
     # Parameters of the Energy balance                  
     model.Energy_Demand = Param(model.scenarios, model.years, model.periods, 

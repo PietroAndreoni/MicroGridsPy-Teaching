@@ -89,6 +89,12 @@ Waste_Supply = pd.read_excel('Inputs/Waste_Supply.xls')
 def Initialize_Waste(model,s,t):
 
     return float(Waste_Supply[s][t])
+
+Cooking_Demand = pd.read_excel('Inputs/Cooking_Demand.xls')
+
+def Initialize_Cooking(model,s,y):
+
+    return float(Cooking_Demand[s][y])
     
 def Initialize_Upgrades_Number(model):
     '''

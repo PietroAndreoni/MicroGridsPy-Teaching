@@ -25,15 +25,13 @@ Optimization_Goal = 'Operation cost'  # Options: NPC / Operation cost.
 Renewable_Penetration = 0  # a number from 0 to 1.
 Battery_Independency = 0   # number of days of battery independence
 Biogas_Generator = 2       # 0 for no biogas, n is the biogas generator corrisponding index 
-Cooking_Demand = 1         # cooking demand in m^3/yr     
 
 #writing former parameters into data_MY.dat to be read in model
 f = open('Inputs/data_MY.dat','r')
 lines = f.readlines()
 lines[44] = "param: Biogas_Generator := %d;                               #don't change \n" %(Biogas_Generator)
-lines[48] = "param: Yearly_Cooking_Demand := %d;                          #yearly cooking demand in m^3 \n" %(Cooking_Demand)
-if Biogas_Generator == 1:
-    lines[72] = "2  1.2;\n"
+if Biogas_Generator == 0:
+    lines[74] = "2  1.2;\n"
 
 
 f.close()
@@ -49,7 +47,7 @@ model = AbstractModel() # define type of optimization problem
 Model_Creation(model, Renewable_Penetration, Battery_Independency, Biogas_Generator) # Creation of the Sets, parameters and variables.
 instance = Model_Resolution(model, Optimization_Goal, Renewable_Penetration, Battery_Independency, Biogas_Generator) # Resolution of the instance
 
-     # Upload the results from the instance and saving it in excel files
+# Upload the results from the instance and saving it in excel files
 Data = Load_Results(instance, Optimization_Goal) # Extract the  results of energy from the instance and save it in a excel file 
 NPC = Data[0]
 Scenarios =  Data[2]

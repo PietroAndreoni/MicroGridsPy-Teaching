@@ -46,8 +46,6 @@ param: Biogas_Generator := 2;                               #don't change
 
 param: Generator_Types :=  2;                                # Number of different types of gensets 
 
-param: Cooking_Yearly_Demand := 100000                      # in standard m^3 of gas 
-
 param: Renewable_Nominal_Capacity :=                        # Single unit capacity [W] of each type of RES
 1   1000
 2   10000;                                                                                                
@@ -101,4 +99,6 @@ param: Tank_Operation_Maintenance_Cost := 0.045;            # As a percentage of
 
 param: Biodigestor_Efficiency := 0.18;                      # standard cubic meters of biofuel per chilogram of waste [m^3/kg]
 
-param: Tank_Initial_SOC := 1;                               # initial gas present in the biodigestor   
+param: Tank_Initial_SOC := 1;                               # initial gas present in the biodigester   
+
+param: Tank_Nominal_Pressure := 2;                           # nominal operational pressure of the biodigeter

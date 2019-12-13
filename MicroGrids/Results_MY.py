@@ -417,6 +417,9 @@ def Load_Results(instance, Optimization_Goal):
     TotInvCost = instance.Investment_Cost.value
     VOLL = instance.Value_Of_Lost_Load.value
     Renewable_Units = instance.Renewable_Units.get_values()
+    Tank_Capacity = instance.Tank_Capacity.value
+    Tank_investment_cost = instance.Tank_Investment_Cost.value
+    Tank_OyM = instance.Tank_Operation_Maintenance_Cost.value
     
     PRJ_Info = ExcelWriter('Results/Results_Summary.xlsx')
 
@@ -454,8 +457,9 @@ def Load_Results(instance, Optimization_Goal):
 
     Project_Info_2 = pd.DataFrame()
     
+
     for u in range(1, Number_Upgrades+1):
-        
+     
         Project_Info_2.loc['Battery Nominal Capacity [kWh]', 'Upgrade '+str(u)] = Battery_Nominal_Capacity[u]/1000
         
         for g in range(1, Number_Generators+1):
@@ -477,9 +481,11 @@ def Load_Results(instance, Optimization_Goal):
             Project_Info_2.loc['Renewable '+str(r)+' Investment [USD]', 'Upgrade '+str(1)] = Renewable_Nominal_Capacity[r]*Renewable_Units[1,r]*Renewable_Investment_Cost[r]
             if u != 1:
                 Project_Info_2.loc['Renewable '+str(r)+' Investment [USD]', 'Upgrade '+str(u)] = (Renewable_Units[u,r]-Renewable_Units[u-1,r])*Renewable_Nominal_Capacity[r]*Renewable_Investment_Cost[r]
-        
-        Project_Info_2.loc['Total Investment [USD]', 'Upgrade '+str(u)] = Project_Info_2['Upgrade '+str(u)]['Battery Investment [USD]':].sum()
-        
+        if u==1:
+            Project_Info_2.loc['Total Investment [USD]', 'Upgrade '+str(u)] = Project_Info_2['Upgrade '+str(u)]['Battery Investment [USD]':].sum()
+        else: 
+            Project_Info_2.loc['Total Investment [USD]', 'Upgrade '+str(u)] = Project_Info_2['Upgrade '+str(u)]['Battery Investment [USD]':].sum()
+
     Project_Info_2.to_excel(PRJ_Info, sheet_name = 'Components Capacity and Cost')
 
 
@@ -488,8 +494,8 @@ def Load_Results(instance, Optimization_Goal):
         Project_Info_3.loc['Year '+str(y), 'Battery O&M Cost'] = Battery_Nominal_Capacity[u]*PriceBattery*OM_Bat
         Project_Info_3.loc['Year '+str(y), 'Generator O&M Cost'] = sum(Generator_Nominal_Capacity[u,g]*Generator_Investment_Cost[g]*Generator_Operation_Maintenance_Cost[g] for g in range(1, Number_Generators+1))
         Project_Info_3.loc['Year '+str(y), 'Renewable O&M Cost'] = sum(Renewable_Units[u,r]*Renewable_Nominal_Capacity[r]*Renewable_Investment_Cost[r]*OyM_Renewable[r] for r in range(1, Number_Renewable_Sources+1))
-        Project_Info_3.loc['Year '+str(y), 'Total O&M Cost'] =  Project_Info_3.loc['Year '+str(y), 'Battery O&M Cost'] + Project_Info_3.loc['Year '+str(y), 'Generator O&M Cost'] + Project_Info_3.loc['Year '+str(y), 'Renewable O&M Cost']
-        
+        Project_Info_3.loc['Year '+str(y), 'Biodigester O&M Cost'] =  Tank_Capacity*Tank_investment_cost*Tank_OyM
+        Project_Info_3.loc['Year '+str(y), 'Total O&M Cost'] =  Project_Info_3.loc['Year '+str(y), 'Battery O&M Cost'] + Project_Info_3.loc['Year '+str(y), 'Generator O&M Cost'] + Project_Info_3.loc['Year '+str(y), 'Renewable O&M Cost'] + Project_Info_3.loc['Year '+str(y), 'Biodigester O&M Cost']
         Project_Info_3.loc['Year '+str(y), 'Fuel Cost'] = sum(sum(sum(Generator_Energy[s,y,g,t]*Marginal_Cost_Gen[s,y,g]*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for g in range(1, Number_Generators+1))for s in range(1, Number_Scenarios+1))
         Project_Info_3.loc['Year '+str(y), 'Battery Replacement Cost'] = sum(sum((Battery_Flow_in[s,y,t]+Battery_Flow_Out[s,y,t])*Unitary_Battery_Replacement_Cost*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for s in range(1, Number_Scenarios+1))
         Project_Info_3.loc['Year '+str(y), 'Lost Load Cost'] = sum(sum(Lost_Load[s,y,t]*VOLL*Scenario_Weight[s] for t in range(1, Number_Periods+1)) for s in range(1, Number_Scenarios+1))
@@ -522,8 +528,6 @@ def Load_Results(instance, Optimization_Goal):
 
     Project_Info_4.to_excel(PRJ_Info, sheet_name = 'Yearly Energy Averages')
 
-    PRJ_Info.save()
-    print('Results: Results_Summary.xlsx exported')    
     
 #    wb = excel.Workbooks.Open(cwd+"\\Results\\Results_Summary.xlsx")
 #    excel.Worksheets(1).Activate()
@@ -537,6 +541,15 @@ def Load_Results(instance, Optimization_Goal):
 #    wb.Save()
 #    wb.Close()
     
+#    Project_info_5 = pd.DataFrame()
+#    Project_info_5.loc['Tank capacity'] = Tank_Capacity
+#    Project_info_5.loc['Tank investment'] = Tank_Capacity*Tank_investment_cost
+
+#    Project_info_5.to_excel(PRJ_Info, sheet_name = 'Tank data')#
+    
+    PRJ_Info.save()
+    print('Results: Results_Summary.xlsx exported')    
+        
     
     Data = []
     Data.append(NPC)
