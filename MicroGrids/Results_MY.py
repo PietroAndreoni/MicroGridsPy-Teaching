@@ -143,6 +143,7 @@ def Load_Results(instance, Optimization_Goal):
                         for g in range(0,Number_Generators):
                             Information_3[g].append(Generator_Energy[(foo+1,y+1,g+1,t+1)]) 
             Scenarios=Scenarios.append(Information_3)        
+            foo+=1
 
     else:      
         Scenarios = pd.DataFrame()
@@ -176,8 +177,8 @@ def Load_Results(instance, Optimization_Goal):
                         for g in range(0,Number_Generators):
                             Information_3[g].append(Generator_Energy[(foo+1,y+1,g+1,t+1)]) 
             Scenarios=Scenarios.append(Information_3)        
+            foo+=1
 
-    foo+=1
     index=[]  
     if Biogas_Gen != 0:    
         for j in range(1, Number_Scenarios+1):   
@@ -196,8 +197,7 @@ def Load_Results(instance, Optimization_Goal):
                index.append('Renewable Energy: s='+str(j)+' r='+str(r))
            for g in range(1,Number_Generators+1):
                index.append('Generator: s='+str(j)+' g='+str(g))
-    else:
-        index=[]  
+    else:  
         for j in range(1, Number_Scenarios+1):   
            index.append('Lost_Load '+str(j))
            index.append('Battery_Flow_Out '+str(j)) 
